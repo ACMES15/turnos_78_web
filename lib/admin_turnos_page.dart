@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'media_manager.dart';
 
 class AdminTurnosPage extends StatelessWidget {
   const AdminTurnosPage({Key? key}) : super(key: key);
@@ -14,6 +15,28 @@ class AdminTurnosPage extends StatelessWidget {
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.add_photo_alternate),
+            tooltip: 'Agregar imágenes/videos',
+            onPressed: () async {
+              final urls = await MediaManager.pickAndUploadMedia(context);
+              if (urls.isNotEmpty) {
+                await FirebaseFirestore.instance
+                    .collection('media')
+                    .doc('rotador')
+                    .set({
+                  'urls': urls,
+                  'timestamp': DateTime.now(),
+                });
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text('¡Imágenes/videos subidos!'),
+                      backgroundColor: Colors.pink),
+                );
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Cerrar sesión',
