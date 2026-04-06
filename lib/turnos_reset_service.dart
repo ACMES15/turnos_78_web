@@ -39,7 +39,7 @@ Future<int> getNextTurnoNumber(String tipo) async {
   if (lastReset == null || (now.isAfter(hoy) && lastReset.isBefore(hoy))) {
     return 1;
   }
-  // Buscar el mayor número del día en las 3 colecciones
+  // Buscar el mayor número del día en las 3 colecciones usando ambos campos para filtrar
   int maxNum = 0;
   final startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
   final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
@@ -49,14 +49,19 @@ Future<int> getNextTurnoNumber(String tipo) async {
       .where('tipo', isEqualTo: tipo)
       .get();
   for (final doc in turnos.docs) {
+    DateTime? fecha;
     final ts = doc['timestamp'];
     final local = doc['createdAtLocal'];
-    final fecha = ts != null
-        ? (ts is Timestamp ? ts.toDate() : ts)
-        : (local is Timestamp ? local.toDate() : local);
+    if (ts != null && ts is Timestamp) {
+      fecha = ts.toDate();
+    } else if (local != null && local is Timestamp) {
+      fecha = local.toDate();
+    } else if (local != null && local is DateTime) {
+      fecha = local;
+    }
     if (fecha != null &&
-        fecha.isAfter(startOfDay) &&
-        fecha.isBefore(endOfDay)) {
+        fecha.isAfter(startOfDay.subtract(const Duration(seconds: 1))) &&
+        fecha.isBefore(endOfDay.add(const Duration(seconds: 1)))) {
       final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
       if (n > maxNum) maxNum = n;
     }
@@ -67,14 +72,19 @@ Future<int> getNextTurnoNumber(String tipo) async {
       .where('tipo', isEqualTo: tipo)
       .get();
   for (final doc in llamados.docs) {
+    DateTime? fecha;
     final ts = doc['timestamp'];
     final local = doc['createdAtLocal'];
-    final fecha = ts != null
-        ? (ts is Timestamp ? ts.toDate() : ts)
-        : (local is Timestamp ? local.toDate() : local);
+    if (ts != null && ts is Timestamp) {
+      fecha = ts.toDate();
+    } else if (local != null && local is Timestamp) {
+      fecha = local.toDate();
+    } else if (local != null && local is DateTime) {
+      fecha = local;
+    }
     if (fecha != null &&
-        fecha.isAfter(startOfDay) &&
-        fecha.isBefore(endOfDay)) {
+        fecha.isAfter(startOfDay.subtract(const Duration(seconds: 1))) &&
+        fecha.isBefore(endOfDay.add(const Duration(seconds: 1)))) {
       final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
       if (n > maxNum) maxNum = n;
     }
@@ -85,14 +95,19 @@ Future<int> getNextTurnoNumber(String tipo) async {
       .where('tipo', isEqualTo: tipo)
       .get();
   for (final doc in finalizados.docs) {
+    DateTime? fecha;
     final ts = doc['timestamp'];
     final local = doc['createdAtLocal'];
-    final fecha = ts != null
-        ? (ts is Timestamp ? ts.toDate() : ts)
-        : (local is Timestamp ? local.toDate() : local);
+    if (ts != null && ts is Timestamp) {
+      fecha = ts.toDate();
+    } else if (local != null && local is Timestamp) {
+      fecha = local.toDate();
+    } else if (local != null && local is DateTime) {
+      fecha = local;
+    }
     if (fecha != null &&
-        fecha.isAfter(startOfDay) &&
-        fecha.isBefore(endOfDay)) {
+        fecha.isAfter(startOfDay.subtract(const Duration(seconds: 1))) &&
+        fecha.isBefore(endOfDay.add(const Duration(seconds: 1)))) {
       final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
       if (n > maxNum) maxNum = n;
     }

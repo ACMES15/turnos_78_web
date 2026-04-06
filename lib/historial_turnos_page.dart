@@ -77,7 +77,7 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Historial de Turnos',
+        title: const Text('HISTORIAL CYC TURNOS',
             style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
