@@ -202,7 +202,8 @@ class AdminTurnosPage extends StatelessWidget {
                                         'tipo': turno['tipo'] ?? '',
                                         'fecha': turno['fecha'] ?? '',
                                         'hora': turno['hora'] ?? '',
-                                        'timestamp': DateTime.now(),
+                                        'timestamp':
+                                            FieldValue.serverTimestamp(),
                                       });
                                       // ignore: use_build_context_synchronously
                                       ScaffoldMessenger.of(context)

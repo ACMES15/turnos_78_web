@@ -78,7 +78,7 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
         'numero': numero,
         'fecha': fecha,
         'hora': hora,
-        'timestamp': now,
+        'timestamp': FieldValue.serverTimestamp(),
       });
       await _imprimirTurno(numero, fecha, hora);
       setState(() {
