@@ -47,34 +47,55 @@ Future<int> getNextTurnoNumber(String tipo) async {
   final turnos = await FirebaseFirestore.instance
       .collection('turnos')
       .where('tipo', isEqualTo: tipo)
-      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
-      .where('timestamp', isLessThanOrEqualTo: endOfDay)
       .get();
   for (final doc in turnos.docs) {
-    final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
-    if (n > maxNum) maxNum = n;
+    final ts = doc['timestamp'];
+    final local = doc['createdAtLocal'];
+    final fecha = ts != null
+        ? (ts is Timestamp ? ts.toDate() : ts)
+        : (local is Timestamp ? local.toDate() : local);
+    if (fecha != null &&
+        fecha.isAfter(startOfDay) &&
+        fecha.isBefore(endOfDay)) {
+      final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
+      if (n > maxNum) maxNum = n;
+    }
   }
   // turnos_llamados
   final llamados = await FirebaseFirestore.instance
       .collection('turnos_llamados')
       .where('tipo', isEqualTo: tipo)
-      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
-      .where('timestamp', isLessThanOrEqualTo: endOfDay)
       .get();
   for (final doc in llamados.docs) {
-    final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
-    if (n > maxNum) maxNum = n;
+    final ts = doc['timestamp'];
+    final local = doc['createdAtLocal'];
+    final fecha = ts != null
+        ? (ts is Timestamp ? ts.toDate() : ts)
+        : (local is Timestamp ? local.toDate() : local);
+    if (fecha != null &&
+        fecha.isAfter(startOfDay) &&
+        fecha.isBefore(endOfDay)) {
+      final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
+      if (n > maxNum) maxNum = n;
+    }
   }
   // turnos_finalizados
   final finalizados = await FirebaseFirestore.instance
       .collection('turnos_finalizados')
       .where('tipo', isEqualTo: tipo)
-      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
-      .where('timestamp', isLessThanOrEqualTo: endOfDay)
       .get();
   for (final doc in finalizados.docs) {
-    final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
-    if (n > maxNum) maxNum = n;
+    final ts = doc['timestamp'];
+    final local = doc['createdAtLocal'];
+    final fecha = ts != null
+        ? (ts is Timestamp ? ts.toDate() : ts)
+        : (local is Timestamp ? local.toDate() : local);
+    if (fecha != null &&
+        fecha.isAfter(startOfDay) &&
+        fecha.isBefore(endOfDay)) {
+      final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
+      if (n > maxNum) maxNum = n;
+    }
   }
   return maxNum + 1;
 }
