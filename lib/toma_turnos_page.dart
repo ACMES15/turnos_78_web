@@ -96,7 +96,12 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
         _ultimoHora = hora;
       });
       _mostrarDialogo(numero, fecha, hora);
-    } catch (e) {
+    } catch (e, stack) {
+      // Debug: imprimir error y stacktrace en consola
+      // ignore: avoid_print
+      print('Error al solicitar turno: $e');
+      // ignore: avoid_print
+      print(stack);
       setState(() {
         _loading = false;
         _error = 'Error: $e';
