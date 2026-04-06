@@ -9,17 +9,24 @@ class MediaManager {
       allowMultiple: true,
       type: FileType.custom,
       allowedExtensions: ['jpg', 'jpeg', 'png', 'mp4', 'mov'],
+      withData: true, // importante para web
     );
     if (result == null) return [];
     final files = result.files;
     List<String> urls = [];
     for (final file in files.take(10)) {
-      final path = file.path;
-      if (path == null) continue;
       final ref = FirebaseStorage.instance.ref().child('media/${file.name}');
-      final uploadTask = await ref.putFile(File(path));
-      final url = await ref.getDownloadURL();
-      urls.add(url);
+      if (file.bytes != null) {
+        // Para web y fallback universal
+        final uploadTask = await ref.putData(file.bytes!);
+        final url = await ref.getDownloadURL();
+        urls.add(url);
+      } else if (file.path != null) {
+        // Para Windows/Linux/Mac
+        final uploadTask = await ref.putFile(File(file.path!));
+        final url = await ref.getDownloadURL();
+        urls.add(url);
+      }
     }
     return urls;
   }

@@ -73,6 +73,11 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
         .limit(10)
         .snapshots()
         .listen((snapshot) async {
+      // DEBUG: imprimir documentos recibidos en consola
+      print('turnos_llamados recibidos:');
+      for (final doc in snapshot.docs) {
+        print(doc.data());
+      }
       final nuevos = snapshot.docs
           .map((doc) => {
                 'id': doc.id,
@@ -161,76 +166,24 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
                         final turno = _turnosLlamados[i];
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 8),
+                              vertical: 32, horizontal: 8),
                           child: Card(
                             color: Colors.white,
                             elevation: 4,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                                borderRadius: BorderRadius.circular(32)),
                             child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Text('Turno llamado',
-                                      style: TextStyle(
-                                          fontSize: 22,
-                                          color: Colors.pink,
-                                          fontWeight: FontWeight.bold)),
-                                  const SizedBox(height: 12),
-                                  Text(turno['numero'] ?? '',
-                                      style: const TextStyle(
-                                          fontSize: 48,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black)),
-                                  const SizedBox(height: 8),
-                                  Text(turno['tipo'] ?? '',
-                                      style: const TextStyle(
-                                          fontSize: 22, color: Colors.pink)),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                      '${turno['fecha'] ?? ''}  ${turno['hora'] ?? ''}',
-                                      style: const TextStyle(fontSize: 16)),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      ElevatedButton.icon(
-                                        icon: const Icon(Icons.check_circle,
-                                            color: Colors.green),
-                                        label: const Text('Finalizar'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                        onPressed: () async {
-                                          // Eliminar de turnos_llamados
-                                          await FirebaseFirestore.instance
-                                              .collection('turnos_llamados')
-                                              .doc(turno['id'])
-                                              .delete();
-                                        },
-                                      ),
-                                      const SizedBox(width: 16),
-                                      ElevatedButton.icon(
-                                        icon: const Icon(Icons.hourglass_empty,
-                                            color: Colors.orange),
-                                        label: const Text('Pendiente'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.orange,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                        onPressed: () async {
-                                          // Eliminar de turnos_llamados
-                                          await FirebaseFirestore.instance
-                                              .collection('turnos_llamados')
-                                              .doc(turno['id'])
-                                              .delete();
-                                        },
-                                      ),
-                                    ],
+                              padding: const EdgeInsets.all(32),
+                              child: Center(
+                                child: Text(
+                                  turno['numero'] ?? '',
+                                  style: const TextStyle(
+                                    fontSize: 96,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.pink,
+                                    letterSpacing: 4,
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ),

@@ -35,20 +35,46 @@ Future<int> getNextTurnoNumber(String tipo) async {
   }
   final now = DateTime.now();
   final hoy = DateTime(now.year, now.month, now.day, 1, 0, 0);
-  final col = FirebaseFirestore.instance.collection('turnos');
-  final query = await col
-      .where('tipo', isEqualTo: tipo)
-      .orderBy('timestamp', descending: true)
-      .limit(1)
-      .get();
-  if (lastReset == null || now.isAfter(hoy) && lastReset.isBefore(hoy)) {
-    // Es un nuevo día después del reset, reiniciar a 1
+  // Si es un nuevo día después del reset, reiniciar a 1
+  if (lastReset == null || (now.isAfter(hoy) && lastReset.isBefore(hoy))) {
     return 1;
   }
-  if (query.docs.isNotEmpty) {
-    final last = query.docs.first['numero'] as String;
-    final num = int.tryParse(last.substring(1)) ?? 0;
-    return num + 1;
+  // Buscar el mayor número del día en las 3 colecciones
+  int maxNum = 0;
+  final startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+  final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+  // turnos
+  final turnos = await FirebaseFirestore.instance
+      .collection('turnos')
+      .where('tipo', isEqualTo: tipo)
+      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+      .where('timestamp', isLessThanOrEqualTo: endOfDay)
+      .get();
+  for (final doc in turnos.docs) {
+    final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
+    if (n > maxNum) maxNum = n;
   }
-  return 1;
+  // turnos_llamados
+  final llamados = await FirebaseFirestore.instance
+      .collection('turnos_llamados')
+      .where('tipo', isEqualTo: tipo)
+      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+      .where('timestamp', isLessThanOrEqualTo: endOfDay)
+      .get();
+  for (final doc in llamados.docs) {
+    final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
+    if (n > maxNum) maxNum = n;
+  }
+  // turnos_finalizados
+  final finalizados = await FirebaseFirestore.instance
+      .collection('turnos_finalizados')
+      .where('tipo', isEqualTo: tipo)
+      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+      .where('timestamp', isLessThanOrEqualTo: endOfDay)
+      .get();
+  for (final doc in finalizados.docs) {
+    final n = int.tryParse((doc['numero'] as String).substring(1)) ?? 0;
+    if (n > maxNum) maxNum = n;
+  }
+  return maxNum + 1;
 }
