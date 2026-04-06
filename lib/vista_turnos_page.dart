@@ -78,6 +78,7 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
       for (final doc in snapshot.docs) {
         print(doc.data());
       }
+      // Usar createdAtLocal si timestamp es null
       final nuevos = snapshot.docs
           .map((doc) => {
                 'id': doc.id,
@@ -85,8 +86,18 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
                 'tipo': doc['tipo']?.toString() ?? '',
                 'fecha': doc['fecha']?.toString() ?? '',
                 'hora': doc['hora']?.toString() ?? '',
+                'timestamp': doc['timestamp'] ?? doc['createdAtLocal'],
               })
           .toList();
+      // Ordenar por timestamp descendente manualmente si es necesario
+      nuevos.sort((a, b) {
+        final ta = a['timestamp'];
+        final tb = b['timestamp'];
+        if (ta == null && tb == null) return 0;
+        if (ta == null) return 1;
+        if (tb == null) return -1;
+        return (tb as Comparable).compareTo(ta);
+      });
       if (mounted && nuevos.isNotEmpty) {
         // Detectar si hay un nuevo turno para sonar
         if (_turnosLlamados.isEmpty ||
