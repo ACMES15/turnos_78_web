@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart' as bt;
 import 'firebase_options.dart';
 import 'turnos_reset_service.dart';
+import 'turno_cache.dart';
 
 class TomaTurnosPage extends StatefulWidget {
   const TomaTurnosPage({Key? key}) : super(key: key);
@@ -30,6 +31,17 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     _initPrinter();
     // Ejecutar reset automático de turnos pendientes si corresponde
     resetTurnosPendientes();
+    _programarLimpiezaCache();
+  }
+
+  void _programarLimpiezaCache() async {
+    // Limpia el cache si la fecha cambió o si es después de la 1:00 am
+    final cache = await TurnoCache.obtenerTurno();
+    final now = DateTime.now();
+    final hoy = DateFormat('dd/MM/yyyy').format(now);
+    if (cache['fecha'] != hoy && now.hour >= 1) {
+      await TurnoCache.limpiar();
+    }
   }
 
   Future<void> _initFirebase() async {
@@ -59,7 +71,14 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
 
   Future<String> _getNextTurno(String tipo) async {
     final pref = tipo == 'RECOGER' ? 'R' : 'I';
-    final next = await getNextTurnoNumber(tipo);
+    final now = DateTime.now();
+    final hoy = DateFormat('dd/MM/yyyy').format(now);
+    final cache = await TurnoCache.obtenerTurno();
+    int next = 1;
+    if (cache['fecha'] == hoy && cache['numero'] != null) {
+      final n = int.tryParse((cache['numero'] as String).substring(1)) ?? 0;
+      next = n + 1;
+    }
     return '$pref${next.toString().padLeft(3, '0')}';
   }
 
@@ -73,6 +92,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
       final now = DateTime.now();
       final fecha = DateFormat('dd/MM/yyyy').format(now);
       final hora = DateFormat('HH:mm').format(now);
+      // Guardar en cache local
+      await TurnoCache.guardarTurno(numero, fecha);
+      // Guardar en Firestore
       await FirebaseFirestore.instance.collection('turnos').add({
         'tipo': tipo,
         'numero': numero,
