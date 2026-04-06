@@ -5,6 +5,7 @@ import 'login_page.dart';
 import 'toma_turnos_page.dart';
 import 'admin_turnos_page.dart';
 import 'vista_turnos_page.dart';
+import 'historial_turnos_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/toma_turnos': (context) => const TomaTurnosPage(),
         '/admin_turnos': (context) => const AdminTurnosPage(),
         '/vista_turnos': (context) => const VistaTurnosPage(),
+        '/historial_turnos': (context) => const HistorialTurnosPage(),
       },
     );
   }

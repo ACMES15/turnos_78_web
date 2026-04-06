@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/intl.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart' as bt;
 import 'firebase_options.dart';
+import 'turnos_reset_service.dart';
 
 class TomaTurnosPage extends StatefulWidget {
   const TomaTurnosPage({Key? key}) : super(key: key);
@@ -27,6 +28,8 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     super.initState();
     _initFirebase();
     _initPrinter();
+    // Ejecutar reset automático de turnos pendientes si corresponde
+    resetTurnosPendientes();
   }
 
   Future<void> _initFirebase() async {
@@ -55,19 +58,8 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
   }
 
   Future<String> _getNextTurno(String tipo) async {
-    final col = FirebaseFirestore.instance.collection('turnos');
     final pref = tipo == 'RECOGER' ? 'R' : 'I';
-    final query = await col
-        .where('tipo', isEqualTo: tipo)
-        .orderBy('timestamp', descending: true)
-        .limit(1)
-        .get();
-    int next = 1;
-    if (query.docs.isNotEmpty) {
-      final last = query.docs.first['numero'] as String;
-      final num = int.tryParse(last.substring(1)) ?? 0;
-      next = num + 1;
-    }
+    final next = await getNextTurnoNumber(tipo);
     return '$pref${next.toString().padLeft(3, '0')}';
   }
 

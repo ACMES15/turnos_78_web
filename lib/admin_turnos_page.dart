@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'media_manager.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AdminTurnosPage extends StatelessWidget {
   const AdminTurnosPage({Key? key}) : super(key: key);
@@ -35,6 +36,37 @@ class AdminTurnosPage extends StatelessWidget {
                       backgroundColor: Colors.pink),
                 );
               }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_forever),
+            tooltip: 'Eliminar todas las imágenes/videos',
+            onPressed: () async {
+              final doc = await FirebaseFirestore.instance
+                  .collection('media')
+                  .doc('rotador')
+                  .get();
+              if (doc.exists && doc['urls'] != null) {
+                final urls = List<String>.from(doc['urls']);
+                // Eliminar de Storage
+                for (final url in urls) {
+                  try {
+                    final ref = await firebase_storage.FirebaseStorage.instance
+                        .refFromURL(url);
+                    await ref.delete();
+                  } catch (_) {}
+                }
+              }
+              await FirebaseFirestore.instance
+                  .collection('media')
+                  .doc('rotador')
+                  .delete();
+              // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('¡Imágenes/videos eliminados!'),
+                    backgroundColor: Colors.pink),
+              );
             },
           ),
           IconButton(
@@ -162,19 +194,89 @@ class AdminTurnosPage extends StatelessWidget {
                                     icon: const Icon(Icons.campaign,
                                         color: Colors.pink),
                                     tooltip: 'Llamar',
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await FirebaseFirestore.instance
+                                          .collection('turnos_llamados')
+                                          .add({
+                                        'numero': turno['numero'] ?? '',
+                                        'tipo': turno['tipo'] ?? '',
+                                        'fecha': turno['fecha'] ?? '',
+                                        'hora': turno['hora'] ?? '',
+                                        'timestamp': DateTime.now(),
+                                      });
+                                      // ignore: use_build_context_synchronously
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Turno ${turno['numero']} llamado'),
+                                            backgroundColor: Colors.pink),
+                                      );
+                                    },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.hourglass_empty,
                                         color: Colors.orange),
                                     tooltip: 'Pendiente',
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      // Eliminar de turnos_llamados si existe
+                                      final llamado = await FirebaseFirestore
+                                          .instance
+                                          .collection('turnos_llamados')
+                                          .where('numero',
+                                              isEqualTo: turno['numero'])
+                                          .limit(1)
+                                          .get();
+                                      if (llamado.docs.isNotEmpty) {
+                                        await llamado.docs.first.reference
+                                            .delete();
+                                      }
+                                    },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.check_circle,
                                         color: Colors.green),
                                     tooltip: 'Finalizar',
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      final now = DateTime.now();
+                                      // Copiar el turno a 'turnos_finalizados' con hora de finalización
+                                      await FirebaseFirestore.instance
+                                          .collection('turnos_finalizados')
+                                          .add({
+                                        'numero': turno['numero'] ?? '',
+                                        'tipo': turno['tipo'] ?? '',
+                                        'fecha': turno['fecha'] ?? '',
+                                        'hora': turno['hora'] ?? '',
+                                        'timestamp': turno['timestamp'],
+                                        'hora_finalizacion':
+                                            now.toIso8601String(),
+                                      });
+                                      // Eliminar de la colección turnos_llamados si existe
+                                      final llamado = await FirebaseFirestore
+                                          .instance
+                                          .collection('turnos_llamados')
+                                          .where('numero',
+                                              isEqualTo: turno['numero'])
+                                          .limit(1)
+                                          .get();
+                                      if (llamado.docs.isNotEmpty) {
+                                        await llamado.docs.first.reference
+                                            .delete();
+                                      }
+                                      // Eliminar el turno de la colección principal
+                                      await FirebaseFirestore.instance
+                                          .collection('turnos')
+                                          .doc(turno.id)
+                                          .delete();
+                                      // ignore: use_build_context_synchronously
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Turno ${turno['numero']} finalizado'),
+                                            backgroundColor: Colors.green),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

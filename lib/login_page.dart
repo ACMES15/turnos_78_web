@@ -21,6 +21,8 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacementNamed(context, '/admin_turnos');
     } else if (user == 'vista78' && pass == 'vista78') {
       Navigator.pushReplacementNamed(context, '/vista_turnos');
+    } else if (user == 'admin78' && pass == 'admin78') {
+      Navigator.pushReplacementNamed(context, '/historial_turnos');
     } else {
       setState(() {
         _error = 'Usuario o contraseña incorrectos';

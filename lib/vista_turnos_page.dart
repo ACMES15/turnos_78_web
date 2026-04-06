@@ -14,7 +14,7 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
   int _mediaIndex = 0;
   List<String> _mediaUrls = [];
   VideoPlayerController? _videoController;
-  final List<Map<String, String>> _turnosLlamados = [];
+  final List<Map<String, dynamic>> _turnosLlamados = [];
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
@@ -74,7 +74,8 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
         .snapshots()
         .listen((snapshot) async {
       final nuevos = snapshot.docs
-          .map((doc) => <String, String>{
+          .map((doc) => {
+                'id': doc.id,
                 'numero': doc['numero']?.toString() ?? '',
                 'tipo': doc['tipo']?.toString() ?? '',
                 'fecha': doc['fecha']?.toString() ?? '',
@@ -190,6 +191,45 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
                                   Text(
                                       '${turno['fecha'] ?? ''}  ${turno['hora'] ?? ''}',
                                       style: const TextStyle(fontSize: 16)),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton.icon(
+                                        icon: const Icon(Icons.check_circle,
+                                            color: Colors.green),
+                                        label: const Text('Finalizar'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.green,
+                                          foregroundColor: Colors.white,
+                                        ),
+                                        onPressed: () async {
+                                          // Eliminar de turnos_llamados
+                                          await FirebaseFirestore.instance
+                                              .collection('turnos_llamados')
+                                              .doc(turno['id'])
+                                              .delete();
+                                        },
+                                      ),
+                                      const SizedBox(width: 16),
+                                      ElevatedButton.icon(
+                                        icon: const Icon(Icons.hourglass_empty,
+                                            color: Colors.orange),
+                                        label: const Text('Pendiente'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.orange,
+                                          foregroundColor: Colors.white,
+                                        ),
+                                        onPressed: () async {
+                                          // Eliminar de turnos_llamados
+                                          await FirebaseFirestore.instance
+                                              .collection('turnos_llamados')
+                                              .doc(turno['id'])
+                                              .delete();
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
