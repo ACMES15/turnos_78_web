@@ -13,6 +13,9 @@ class TomaTurnosPage extends StatefulWidget {
 }
 
 class _TomaTurnosPageState extends State<TomaTurnosPage> {
+  String? _ultimoTurno;
+  String? _ultimoFecha;
+  String? _ultimoHora;
   bool _initialized = false;
   bool _loading = false;
   String? _error;
@@ -88,6 +91,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
       await _imprimirTurno(numero, fecha, hora);
       setState(() {
         _loading = false;
+        _ultimoTurno = numero;
+        _ultimoFecha = fecha;
+        _ultimoHora = hora;
       });
       _mostrarDialogo(numero, fecha, hora);
     } catch (e) {
@@ -142,9 +148,90 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('LIVERPOOL GALERIAS CYC'),
+        centerTitle: true,
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            double fontSize = constraints.maxWidth > 600 ? 36 : 24;
+            return Text(
+              'LIVERPOOL GALERIAS CYC',
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            );
+          },
+        ),
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Cerrar sesión',
+            onPressed: () async {
+              final result = await showDialog<bool>(
+                context: context,
+                barrierDismissible: false,
+                builder: (ctx) {
+                  final TextEditingController _controller =
+                      TextEditingController();
+                  return AlertDialog(
+                    title: const Text('Confirmar cierre de sesión'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('Ingresa la contraseña para cerrar sesión:'),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _controller,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Contraseña',
+                          ),
+                          autofocus: true,
+                          onSubmitted: (_) {
+                            Navigator.of(ctx)
+                                .pop(_controller.text == 'turno78');
+                          },
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        child: const Text('Cancelar'),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.pink,
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.of(ctx).pop(_controller.text == 'turno78');
+                        },
+                        child: const Text('Cerrar sesión'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              if (result == true) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
+              } else if (result == false) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Contraseña incorrecta.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Container(
@@ -178,20 +265,23 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                       children: [
                         _BotonTurno(
                           label: 'INFORMES',
-                          color: Colors.pink,
+                          color: const Color.fromARGB(255, 239, 81, 134),
                           icon: Icons.info_outline,
                           onTap: _loading
                               ? null
                               : () => _solicitarTurno('INFORMES'),
+                          size: 150,
                         ),
-                        const SizedBox(width: 32),
+                        const SizedBox(width: 40),
                         _BotonTurno(
                           label: 'RECOGER PEDIDO',
-                          color: Colors.pink.shade200,
+                          color: Colors.pink.shade700,
                           icon: Icons.shopping_bag_outlined,
                           onTap: _loading
                               ? null
                               : () => _solicitarTurno('RECOGER'),
+                          size: 150,
+                          labelColor: Colors.white,
                         ),
                       ],
                     ),
@@ -202,6 +292,31 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                     if (_error != null) ...[
                       const SizedBox(height: 16),
                       Text(_error!, style: const TextStyle(color: Colors.red)),
+                    ],
+                    if (_ultimoTurno != null && !_loading) ...[
+                      const SizedBox(height: 32),
+                      Divider(color: Colors.pink, thickness: 2),
+                      Text(
+                        'Último turno solicitado:',
+                        style: TextStyle(
+                          color: Colors.pink.shade700,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Turno: $_ultimoTurno',
+                        style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Text(
+                        'Fecha: $_ultimoFecha   Hora: $_ultimoHora',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ],
                   ],
                 )
@@ -217,39 +332,56 @@ class _BotonTurno extends StatelessWidget {
   final Color color;
   final IconData icon;
   final VoidCallback? onTap;
-  const _BotonTurno(
-      {required this.label,
-      required this.color,
-      required this.icon,
-      this.onTap});
+  final double size;
+  final Color? labelColor;
+  const _BotonTurno({
+    required this.label,
+    required this.color,
+    required this.icon,
+    this.onTap,
+    this.size = 120,
+    this.labelColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 120,
-        height: 120,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
               color: color.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: Colors.white),
-            const SizedBox(height: 12),
-            Text(label,
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center),
+            Icon(icon, size: size * 0.35, color: Colors.white),
+            SizedBox(height: size * 0.10),
+            Text(
+              label,
+              style: TextStyle(
+                color: labelColor ?? Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: size * 0.13,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 4,
+                    offset: const Offset(1, 2),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
