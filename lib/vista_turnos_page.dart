@@ -20,7 +20,6 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
   @override
   void initState() {
     super.initState();
-    _loadMedia();
     _listenTurnoLlamado();
     _startMediaRotation();
   }
@@ -56,11 +55,11 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
 
   void _startMediaRotation() {
     Future.doWhile(() async {
-      await Future.delayed(const Duration(minutes: 2));
-      if (!mounted || _mediaUrls.isEmpty) return false;
+      await Future.delayed(const Duration(minutes: 1));
+      if (!mounted) return false;
       setState(() {
-        _mediaIndex = (_mediaIndex + 1) % _mediaUrls.length;
-        _prepareVideoController();
+        _mediaIndex =
+            (_mediaIndex + 1) % (_mediaUrls.isNotEmpty ? _mediaUrls.length : 1);
       });
       return true;
     });
@@ -69,8 +68,7 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
   void _listenTurnoLlamado() {
     FirebaseFirestore.instance
         .collection('turnos_llamados')
-        .orderBy('timestamp', descending: true)
-        .limit(10)
+        .where('finalizado', isEqualTo: false)
         .snapshots()
         .listen((snapshot) async {
       // DEBUG: imprimir documentos recibidos en consola
@@ -78,7 +76,7 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
       for (final doc in snapshot.docs) {
         print(doc.data());
       }
-      // Usar createdAtLocal si timestamp es null
+      // Usar createdAtLocal si timestamp es null y ordenar manualmente
       final nuevos = snapshot.docs
           .map((doc) => {
                 'id': doc.id,
@@ -89,7 +87,6 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
                 'timestamp': doc['timestamp'] ?? doc['createdAtLocal'],
               })
           .toList();
-      // Ordenar por timestamp descendente manualmente si es necesario
       nuevos.sort((a, b) {
         final ta = a['timestamp'];
         final tb = b['timestamp'];
@@ -98,16 +95,22 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
         if (tb == null) return -1;
         return (tb as Comparable).compareTo(ta);
       });
-      if (mounted && nuevos.isNotEmpty) {
+      final ultimos = nuevos.take(10).toList();
+      if (mounted) {
         // Detectar si hay un nuevo turno para sonar
-        if (_turnosLlamados.isEmpty ||
-            nuevos.first['numero'] != _turnosLlamados.first['numero']) {
-          await _audioPlayer.play(AssetSource('sounds/turno_bell.mp3'));
+        if (ultimos.isNotEmpty &&
+            (_turnosLlamados.isEmpty ||
+                ultimos.first['numero'] != _turnosLlamados.first['numero'])) {
+          try {
+            await _audioPlayer.play(AssetSource('sounds/dingdong.mp3'));
+          } catch (e) {
+            print('Error reproduciendo sonido: $e');
+          }
         }
         setState(() {
           _turnosLlamados
             ..clear()
-            ..addAll(nuevos);
+            ..addAll(ultimos);
         });
       }
     });
@@ -119,15 +122,57 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
     super.dispose();
   }
 
+  // Widget para mostrar cualquier tipo de media
+  Widget _buildMediaWidget(String url) {
+    if (url.endsWith('.mp4') || url.endsWith('.mov')) {
+      if (_videoController != null &&
+          _videoController!.value.isInitialized &&
+          _videoController!.dataSource == url) {
+        return AspectRatio(
+          aspectRatio: _videoController!.value.aspectRatio,
+          child: VideoPlayer(_videoController!),
+        );
+      } else {
+        return const CircularProgressIndicator();
+      }
+    } else if (url.endsWith('.gif')) {
+      // Los GIFs animados se muestran igual que imágenes normales en Flutter
+      return Image.network(url, fit: BoxFit.contain);
+    } else {
+      // Cualquier otro formato de imagen
+      return Image.network(url, fit: BoxFit.contain);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Vista de Turnos'),
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            double fontSize = constraints.maxWidth > 600 ? 36 : 24;
+            return Text(
+              'LIVERPOOL GALERIAS GDL CLICK AND COLLECT',
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            );
+          },
+        ),
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/');
+          },
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -138,72 +183,113 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
           ),
         ],
       ),
-      body: Row(
-        children: [
-          // Lado izquierdo: imágenes/videos
-          Expanded(
-            flex: 2,
-            child: Center(
-              child: _mediaUrls.isEmpty
-                  ? const Text('No hay imágenes o videos')
-                  : _mediaUrls[_mediaIndex].endsWith('.mp4') ||
-                          _mediaUrls[_mediaIndex].endsWith('.mov')
-                      ? (_videoController != null &&
-                              _videoController!.value.isInitialized
-                          ? AspectRatio(
-                              aspectRatio: _videoController!.value.aspectRatio,
-                              child: VideoPlayer(_videoController!),
-                            )
-                          : const CircularProgressIndicator())
-                      : Image.network(_mediaUrls[_mediaIndex],
-                          fit: BoxFit.contain),
-            ),
-          ),
-          // Lado derecho: turnos llamados
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: Colors.pink.shade50,
-              child: _turnosLlamados.isEmpty
-                  ? const Center(
-                      child: Text('Esperando turnos...',
-                          style: TextStyle(
-                              fontSize: 32,
-                              color: Colors.pink,
-                              fontWeight: FontWeight.bold)))
-                  : ListView.builder(
-                      itemCount: _turnosLlamados.length,
-                      itemBuilder: (context, i) {
-                        final turno = _turnosLlamados[i];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 32, horizontal: 8),
-                          child: Card(
-                            color: Colors.white,
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(32)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(32),
-                              child: Center(
-                                child: Text(
-                                  turno['numero'] ?? '',
-                                  style: const TextStyle(
-                                    fontSize: 96,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.pink,
-                                    letterSpacing: 4,
-                                  ),
-                                ),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('media')
+            .doc('rotador')
+            .snapshots(),
+        builder: (context, snapshot) {
+          List<String> mediaUrls = [];
+          if (snapshot.hasData &&
+              snapshot.data != null &&
+              snapshot.data!['urls'] != null) {
+            mediaUrls = List<String>.from(snapshot.data!['urls']);
+          }
+          // Mantener el índice dentro del rango
+          if (_mediaIndex >= mediaUrls.length) {
+            _mediaIndex = 0;
+          }
+          // Actualizar el controlador de video si cambia la URL
+          if (mediaUrls.isNotEmpty) {
+            final url = mediaUrls[_mediaIndex];
+            if ((url.endsWith('.mp4') || url.endsWith('.mov'))) {
+              if (_videoController == null ||
+                  _videoController!.dataSource != url) {
+                _videoController?.dispose();
+                _videoController = VideoPlayerController.network(url)
+                  ..initialize().then((_) {
+                    setState(() {});
+                    _videoController?.play();
+                  });
+              }
+            } else {
+              _videoController?.dispose();
+              _videoController = null;
+            }
+          } else {
+            _videoController?.dispose();
+            _videoController = null;
+          }
+          return Row(
+            children: [
+              // Lado izquierdo: imágenes/videos
+              Expanded(
+                flex: 2,
+                child: Center(
+                  child: mediaUrls.isEmpty
+                      ? const Text('No hay imágenes o videos')
+                      : _buildMediaWidget(mediaUrls[_mediaIndex]),
+                ),
+              ),
+              // Lado derecho: turnos llamados
+              Expanded(
+                flex: 1,
+                child: Container(
+                  color: Colors.pink.shade50,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: _turnosLlamados.isEmpty
+                            ? const Center(
+                                child: Text('Esperando turnos...',
+                                    style: TextStyle(
+                                        fontSize: 32,
+                                        color: Colors.pink,
+                                        fontWeight: FontWeight.bold)))
+                            : ListView.builder(
+                                itemCount: _turnosLlamados.length,
+                                itemBuilder: (context, i) {
+                                  final turno = _turnosLlamados[i];
+                                  final numero =
+                                      (turno['numero'] ?? '').toString();
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 32, horizontal: 8),
+                                    child: Card(
+                                      color: Colors.white,
+                                      elevation: 4,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(32),
+                                        child: Center(
+                                          child: Text(
+                                            numero.isNotEmpty
+                                                ? ' ' + numero
+                                                : '---',
+                                            style: const TextStyle(
+                                              fontSize: 96,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.pink,
+                                              letterSpacing: 4,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-          ),
-        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/intl.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart' as bt;
-import 'firebase_options.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'turnos_reset_service.dart';
-import 'turno_cache.dart';
+import 'fullscreen_helper.dart';
 
 class TomaTurnosPage extends StatefulWidget {
   const TomaTurnosPage({Key? key}) : super(key: key);
@@ -27,35 +26,42 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
   @override
   void initState() {
     super.initState();
-    _initFirebase();
-    _initPrinter();
+    _initialized = true;
     // Ejecutar reset automático de turnos pendientes si corresponde
     resetTurnosPendientes();
-    _programarLimpiezaCache();
+    // Acceder a Theme.of(context) solo después del build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final platform = Theme.of(context).platform;
+      if (platform == TargetPlatform.android) {
+        FullScreenHelper.enableImmersiveMode();
+        _initBluetoothAndPrinter();
+      }
+    });
   }
 
-  void _programarLimpiezaCache() async {
-    // Limpia el cache si la fecha cambió o si es después de la 1:00 am
-    final cache = await TurnoCache.obtenerTurno();
-    final now = DateTime.now();
-    final hoy = DateFormat('dd/MM/yyyy').format(now);
-    if (cache['fecha'] != hoy && now.hour >= 1) {
-      await TurnoCache.limpiar();
+  Future<void> _initBluetoothAndPrinter() async {
+    if (await _solicitarPermisosBluetooth()) {
+      await _initPrinter();
+    } else {
+      setState(() {
+        _error = 'Permisos de Bluetooth denegados. No se puede imprimir.';
+      });
     }
   }
 
-  Future<void> _initFirebase() async {
-    try {
-      await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform);
-      setState(() {
-        _initialized = true;
-      });
-    } catch (e) {
-      setState(() {
-        _error = 'Error inicializando Firebase: $e';
-      });
+  Future<bool> _solicitarPermisosBluetooth() async {
+    if (!mounted) return false;
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      final statuses = await [
+        Permission.bluetooth,
+        Permission.bluetoothScan,
+        Permission.bluetoothConnect,
+        Permission.bluetoothAdvertise,
+        Permission.location
+      ].request();
+      return statuses.values.every((status) => status.isGranted);
     }
+    return true;
   }
 
   Future<void> _initPrinter() async {
@@ -69,17 +75,10 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     } catch (_) {}
   }
 
-  Future<String> _getNextTurno(String tipo) async {
+  Future<String> _getNextTurnoTransaccion(String tipo) async {
     final pref = tipo == 'RECOGER' ? 'R' : 'I';
-    final now = DateTime.now();
-    final hoy = DateFormat('dd/MM/yyyy').format(now);
-    final cache = await TurnoCache.obtenerTurno();
-    int next = 1;
-    if (cache['fecha'] == hoy && cache['numero'] != null) {
-      final n = int.tryParse((cache['numero'] as String).substring(1)) ?? 0;
-      next = n + 1;
-    }
-    return '$pref${next.toString().padLeft(3, '0')}';
+    final nextNum = await getNextTurnoNumber(tipo);
+    return '$pref${nextNum.toString().padLeft(3, '0')}';
   }
 
   Future<void> _solicitarTurno(String tipo) async {
@@ -88,13 +87,31 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
       _error = null;
     });
     try {
-      final numero = await _getNextTurno(tipo);
       final now = DateTime.now();
       final fecha = DateFormat('dd/MM/yyyy').format(now);
       final hora = DateFormat('HH:mm').format(now);
-      // Guardar en cache local
-      await TurnoCache.guardarTurno(numero, fecha);
-      // Guardar en Firestore
+
+      // Buscar cuántos turnos existen hoy de este tipo para generar el consecutivo
+      final query = await FirebaseFirestore.instance
+          .collection('turnos')
+          .where('tipo', isEqualTo: tipo)
+          .where('fecha', isEqualTo: fecha)
+          .get();
+      final count = query.docs.length;
+      final pref = tipo == 'RECOGER' ? 'R' : 'I';
+      final numero = '$pref${(count + 1).toString().padLeft(3, '0')}';
+
+      // Mostrar mensaje si es el primer turno del día
+      if (numero.endsWith('001')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                '¡Nuevo día! El consecutivo de turnos ha sido reiniciado.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+
       await FirebaseFirestore.instance.collection('turnos').add({
         'tipo': tipo,
         'numero': numero,
@@ -163,6 +180,62 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     );
   }
 
+  Future<bool> _pedirPassword(BuildContext context) async {
+    final TextEditingController _controller = TextEditingController();
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Confirmar acción'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Ingresa la contraseña para continuar:'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _controller,
+              obscureText: true,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Contraseña',
+              ),
+              autofocus: true,
+              onSubmitted: (_) {
+                Navigator.of(ctx).pop(_controller.text == 'turno78');
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.pink,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.of(ctx).pop(_controller.text == 'turno78');
+            },
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+    if (result != true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Contraseña incorrecta.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,6 +259,12 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
         ),
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            _pedirPassword(context);
+          },
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -253,95 +332,109 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
           ),
         ],
       ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.pink.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isTablet = constraints.maxWidth > 600;
+          final double padding = isTablet ? 64 : 24;
+          final double buttonSize = isTablet ? 220 : 130;
+          final double buttonSpacing = isTablet ? 60 : 24;
+          final double fontSize = isTablet ? 22 : 16;
+          final double lastTurnFontSize = isTablet ? 36 : 28;
+          return Center(
+            child: Container(
+              padding: EdgeInsets.all(padding),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.pink.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: _initialized
-              ? Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      '¡Gracias por tu preferencia, toma un turno y en breve te atenderemos!',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.pink,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 32),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              constraints: BoxConstraints(
+                maxWidth: isTablet ? 700 : double.infinity,
+              ),
+              child: _initialized
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        _BotonTurno(
-                          label: 'INFORMES',
-                          color: const Color.fromARGB(255, 239, 81, 134),
-                          icon: Icons.info_outline,
-                          onTap: _loading
-                              ? null
-                              : () => _solicitarTurno('INFORMES'),
-                          size: 150,
+                        Text(
+                          '¡Gracias por tu preferencia, toma un turno y en breve te atenderemos!',
+                          style: TextStyle(
+                              fontSize: fontSize,
+                              color: Colors.pink,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
                         ),
-                        const SizedBox(width: 40),
-                        _BotonTurno(
-                          label: 'RECOGER PEDIDO',
-                          color: Colors.pink.shade700,
-                          icon: Icons.shopping_bag_outlined,
-                          onTap: _loading
-                              ? null
-                              : () => _solicitarTurno('RECOGER'),
-                          size: 150,
-                          labelColor: Colors.white,
+                        SizedBox(height: isTablet ? 48 : 28),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _BotonTurno(
+                              label: 'INFORMES',
+                              color: const Color.fromARGB(255, 239, 81, 134),
+                              icon: Icons.info_outline,
+                              onTap: _loading
+                                  ? null
+                                  : () => _solicitarTurno('INFORMES'),
+                              size: buttonSize,
+                            ),
+                            SizedBox(width: buttonSpacing),
+                            _BotonTurno(
+                              label: 'RECOGER PEDIDO',
+                              color: Colors.pink.shade700,
+                              icon: Icons.shopping_bag_outlined,
+                              onTap: _loading
+                                  ? null
+                                  : () => _solicitarTurno('RECOGER'),
+                              size: buttonSize,
+                              labelColor: Colors.white,
+                            ),
+                          ],
                         ),
+                        if (_loading) ...[
+                          SizedBox(height: isTablet ? 32 : 20),
+                          const CircularProgressIndicator(color: Colors.pink),
+                        ],
+                        if (_error != null) ...[
+                          SizedBox(height: isTablet ? 24 : 12),
+                          Text(_error!,
+                              style: const TextStyle(color: Colors.red)),
+                        ],
+                        if (_ultimoTurno != null && !_loading) ...[
+                          SizedBox(height: isTablet ? 48 : 24),
+                          Divider(color: Colors.pink, thickness: 2),
+                          Text(
+                            'Último turno solicitado:',
+                            style: TextStyle(
+                              color: Colors.pink.shade700,
+                              fontWeight: FontWeight.bold,
+                              fontSize: isTablet ? 24 : 18,
+                            ),
+                          ),
+                          SizedBox(height: isTablet ? 16 : 8),
+                          Text(
+                            'Turno: $_ultimoTurno',
+                            style: TextStyle(
+                              fontSize: lastTurnFontSize,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            'Fecha: $_ultimoFecha   Hora: $_ultimoHora',
+                            style: TextStyle(fontSize: fontSize),
+                          ),
+                        ],
                       ],
-                    ),
-                    if (_loading) ...[
-                      const SizedBox(height: 24),
-                      const CircularProgressIndicator(color: Colors.pink),
-                    ],
-                    if (_error != null) ...[
-                      const SizedBox(height: 16),
-                      Text(_error!, style: const TextStyle(color: Colors.red)),
-                    ],
-                    if (_ultimoTurno != null && !_loading) ...[
-                      const SizedBox(height: 32),
-                      Divider(color: Colors.pink, thickness: 2),
-                      Text(
-                        'Último turno solicitado:',
-                        style: TextStyle(
-                          color: Colors.pink.shade700,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Turno: $_ultimoTurno',
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Text(
-                        'Fecha: $_ultimoFecha   Hora: $_ultimoHora',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ],
-                )
-              : const CircularProgressIndicator(color: Colors.pink),
-        ),
+                    )
+                  : const CircularProgressIndicator(color: Colors.pink),
+            ),
+          );
+        },
       ),
     );
   }

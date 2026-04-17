@@ -47,6 +47,8 @@ Future<int> getNextTurnoNumber(String tipo) async {
   final turnos = await FirebaseFirestore.instance
       .collection('turnos')
       .where('tipo', isEqualTo: tipo)
+      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+      .where('timestamp', isLessThanOrEqualTo: endOfDay)
       .get();
   for (final doc in turnos.docs) {
     DateTime? fecha;
@@ -70,6 +72,8 @@ Future<int> getNextTurnoNumber(String tipo) async {
   final llamados = await FirebaseFirestore.instance
       .collection('turnos_llamados')
       .where('tipo', isEqualTo: tipo)
+      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+      .where('timestamp', isLessThanOrEqualTo: endOfDay)
       .get();
   for (final doc in llamados.docs) {
     DateTime? fecha;
@@ -93,6 +97,8 @@ Future<int> getNextTurnoNumber(String tipo) async {
   final finalizados = await FirebaseFirestore.instance
       .collection('turnos_finalizados')
       .where('tipo', isEqualTo: tipo)
+      .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
+      .where('timestamp', isLessThanOrEqualTo: endOfDay)
       .get();
   for (final doc in finalizados.docs) {
     DateTime? fecha;

@@ -28,23 +28,33 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
       'Tiempo Transcurrido'
     ]);
     for (final doc in docs) {
-      final ts = doc['timestamp'];
+      final ts = doc['timestamp_solicitud'];
       final hf = doc['hora_finalizacion'];
       String horaSolicitud = '';
       String horaFinal = '';
       String tiempo = '';
-      if (ts != null && hf != null) {
-        final inicio = DateTime.tryParse(ts.toString());
-        final fin = DateTime.tryParse(hf.toString());
-        if (inicio != null && fin != null) {
-          final dur = fin.difference(inicio);
-          tiempo = dur.inMinutes.toString().padLeft(2, '0') +
-              ':' +
-              (dur.inSeconds % 60).toString().padLeft(2, '0');
-          horaSolicitud =
-              inicio.toString().replaceFirst('T', ' ').substring(0, 19);
-          horaFinal = fin.toString().replaceFirst('T', ' ').substring(0, 19);
+      DateTime? inicio;
+      DateTime? fin;
+      if (ts != null) {
+        if (ts is Timestamp) {
+          inicio = ts.toDate();
+        } else {
+          inicio = DateTime.tryParse(ts.toString());
         }
+      }
+      if (hf != null) {
+        if (hf is Timestamp) {
+          fin = hf.toDate();
+        } else {
+          fin = DateTime.tryParse(hf.toString());
+        }
+      }
+      if (inicio != null && fin != null) {
+        final dur = fin.difference(inicio);
+        tiempo = dur.inMinutes.toString().padLeft(2, '0') + ' min';
+        horaSolicitud =
+            inicio.toString().replaceFirst('T', ' ').substring(0, 19);
+        horaFinal = fin.toString().replaceFirst('T', ' ').substring(0, 19);
       }
       sheet.appendRow([
         doc['numero'] ?? '',
@@ -81,6 +91,12 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
             style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.pink,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/');
+          },
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
@@ -89,8 +105,8 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
                 ? null
                 : () async {
                     final snapshot = await FirebaseFirestore.instance
-                        .collection('turnos')
-                        .orderBy('timestamp', descending: true)
+                        .collection('historial_cyc_turnos')
+                        .orderBy('hora_finalizacion', descending: true)
                         .get();
                     await _exportarExcel(snapshot.docs);
                   },
@@ -177,7 +193,7 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
-                    .collection('turnos_finalizados')
+                    .collection('historial_cyc_turnos')
                     .orderBy('hora_finalizacion', descending: true)
                     .snapshots(),
                 builder: (context, snapshot) {
@@ -202,25 +218,36 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
                       String horaSolicitud = '';
                       String horaFinal = '';
                       String tiempo = '';
-                      final ts = turno['timestamp'];
+                      final ts = turno['timestamp_solicitud'];
                       final hf = turno['hora_finalizacion'];
-                      if (ts != null && hf != null) {
-                        final inicio = DateTime.tryParse(ts.toString());
-                        final fin = DateTime.tryParse(hf.toString());
-                        if (inicio != null && fin != null) {
-                          final dur = fin.difference(inicio);
-                          tiempo = dur.inMinutes.toString().padLeft(2, '0') +
-                              ':' +
-                              (dur.inSeconds % 60).toString().padLeft(2, '0');
-                          horaSolicitud = inicio
-                              .toString()
-                              .replaceFirst('T', ' ')
-                              .substring(0, 19);
-                          horaFinal = fin
-                              .toString()
-                              .replaceFirst('T', ' ')
-                              .substring(0, 19);
+                      DateTime? inicio;
+                      DateTime? fin;
+                      if (ts != null) {
+                        if (ts is Timestamp) {
+                          inicio = ts.toDate();
+                        } else {
+                          inicio = DateTime.tryParse(ts.toString());
                         }
+                      }
+                      if (hf != null) {
+                        if (hf is Timestamp) {
+                          fin = hf.toDate();
+                        } else {
+                          fin = DateTime.tryParse(hf.toString());
+                        }
+                      }
+                      if (inicio != null && fin != null) {
+                        final dur = fin.difference(inicio);
+                        tiempo =
+                            dur.inMinutes.toString().padLeft(2, '0') + ' min';
+                        horaSolicitud = inicio
+                            .toString()
+                            .replaceFirst('T', ' ')
+                            .substring(0, 19);
+                        horaFinal = fin
+                            .toString()
+                            .replaceFirst('T', ' ')
+                            .substring(0, 19);
                       }
                       return Container(
                         color: i % 2 == 0 ? Colors.pink.shade50 : Colors.white,
