@@ -190,57 +190,61 @@ class _DialogoAdminImagenesState extends State<DialogoAdminImagenes> {
             if (_urls.isNotEmpty)
               SizedBox(
                 height: 180,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _urls.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 12),
-                  itemBuilder: (context, i) {
-                    final url = _urls[i];
-                    return Stack(
-                      alignment: Alignment.topRight,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            url,
-                            width: 140,
-                            height: 140,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
+                width: 400, // Ancho fijo para asegurar scroll horizontal
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _urls.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 12),
+                    itemBuilder: (context, i) {
+                      final url = _urls[i];
+                      return Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              url,
                               width: 140,
                               height: 140,
-                              color: Colors.grey.shade200,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.broken_image,
-                                      size: 40, color: Colors.grey),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    'No se pudo cargar',
-                                    style: TextStyle(
-                                        color: Colors.red, fontSize: 12),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                width: 140,
+                                height: 140,
+                                color: Colors.grey.shade200,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Icon(Icons.broken_image,
+                                        size: 40, color: Colors.grey),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'No se pudo cargar',
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 12),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            tooltip: 'Eliminar',
-                            onPressed:
-                                _loading ? null : () => _eliminarUrl(url),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              tooltip: 'Eliminar',
+                              onPressed:
+                                  _loading ? null : () => _eliminarUrl(url),
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
           ],
