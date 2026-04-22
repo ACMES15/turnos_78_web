@@ -1,0 +1,71 @@
+ El volumen de la unidad C es Windows
+ El número de serie del volumen es: 0EC3-ADD5
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java
+
+05/04/2026  05:37 p. m.    <DIR>          .
+05/04/2026  05:37 p. m.    <DIR>          ..
+19/04/2026  09:41 p. m.    <DIR>          com
+05/04/2026  05:37 p. m.    <DIR>          io
+               0 archivos              0 bytes
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java\com
+
+19/04/2026  09:41 p. m.    <DIR>          .
+05/04/2026  05:37 p. m.    <DIR>          ..
+05/04/2026  05:37 p. m.    <DIR>          example
+19/04/2026  09:41 p. m.    <DIR>          liverpool
+               0 archivos              0 bytes
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java\com\example
+
+05/04/2026  05:37 p. m.    <DIR>          .
+19/04/2026  09:41 p. m.    <DIR>          ..
+05/04/2026  05:37 p. m.    <DIR>          turnos_78
+               0 archivos              0 bytes
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java\com\example\turnos_78
+
+05/04/2026  05:37 p. m.    <DIR>          .
+05/04/2026  05:37 p. m.    <DIR>          ..
+05/04/2026  05:37 p. m.               146 MainActivity.java
+               1 archivos            146 bytes
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java\com\liverpool
+
+19/04/2026  09:41 p. m.    <DIR>          .
+19/04/2026  09:41 p. m.    <DIR>          ..
+19/04/2026  09:41 p. m.    <DIR>          turnos78
+               0 archivos              0 bytes
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java\com\liverpool\turnos78
+
+19/04/2026  09:41 p. m.    <DIR>          .
+19/04/2026  09:41 p. m.    <DIR>          ..
+19/04/2026  09:44 p. m.               141 MainActivity.java
+               1 archivos            141 bytes
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java\io
+
+05/04/2026  05:37 p. m.    <DIR>          .
+05/04/2026  05:37 p. m.    <DIR>          ..
+05/04/2026  05:37 p. m.    <DIR>          flutter
+               0 archivos              0 bytes
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java\io\flutter
+
+05/04/2026  05:37 p. m.    <DIR>          .
+05/04/2026  05:37 p. m.    <DIR>          ..
+05/04/2026  05:37 p. m.    <DIR>          plugins
+               0 archivos              0 bytes
+
+ Directorio de c:\turnos_78_web\turnos_78\android\app\src\main\java\io\flutter\plugins
+
+05/04/2026  05:37 p. m.    <DIR>          .
+05/04/2026  05:37 p. m.    <DIR>          ..
+19/04/2026  10:01 p. m.             4,582 GeneratedPluginRegistrant.java
+               1 archivos          4,582 bytes
+
+     Total de archivos en la lista:
+               3 archivos          4,869 bytes
+              26 dirs  692,277,219,328 bytes libres

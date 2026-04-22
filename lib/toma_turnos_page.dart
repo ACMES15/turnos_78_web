@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:blue_thermal_printer/blue_thermal_printer.dart' as bt;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart';
 import 'turnos_reset_service.dart';
 import 'fullscreen_helper.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart' as fb;
+import 'package:blue_thermal_printer/blue_thermal_printer.dart' as bt;
+import 'dart:convert';
 
 class TomaTurnosPage extends StatefulWidget {
   const TomaTurnosPage({Key? key}) : super(key: key);
@@ -22,6 +25,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
   String? _error;
   bt.BlueThermalPrinter printer = bt.BlueThermalPrinter.instance;
   bt.BluetoothDevice? selectedPrinter;
+  fb.BluetoothDevice? zebraDevice;
+  fb.BluetoothCharacteristic? zebraCharacteristic;
+  bool zebraConnected = false;
 
   @override
   void initState() {
@@ -34,9 +40,53 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
       final platform = Theme.of(context).platform;
       if (platform == TargetPlatform.android) {
         FullScreenHelper.enableImmersiveMode();
+        // Desactivado temporalmente: probar si el crash viene del escaneo/autoconexión BLE
+        // Inicializar Bluetooth y detectar impresoras emparejadas
         _initBluetoothAndPrinter();
       }
     });
+  }
+
+  Future<void> _autoConnectZebra() async {
+    // Pedir permisos
+    await [
+      Permission.bluetooth,
+      Permission.bluetoothScan,
+      Permission.bluetoothConnect,
+      Permission.location
+    ].request();
+    // Escanear y conectar
+    fb.FlutterBluePlus.startScan(timeout: const Duration(seconds: 4));
+    fb.FlutterBluePlus.scanResults.listen((results) async {
+      for (final r in results) {
+        if (r.device.name.toLowerCase().contains('zebra')) {
+          // stopScan() returns void in this API; call it without awaiting a value
+          fb.FlutterBluePlus.stopScan();
+          try {
+            await r.device.connect();
+            List<fb.BluetoothService> services =
+                await r.device.discoverServices();
+            for (var service in services) {
+              for (var c in service.characteristics) {
+                if (c.properties.write) {
+                  setState(() {
+                    zebraDevice = r.device;
+                    zebraCharacteristic = c;
+                    zebraConnected = true;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Conectado a Zebra: ${r.device.name}')),
+                  );
+                  return;
+                }
+              }
+            }
+          } catch (_) {}
+        }
+      }
+    });
+    await Future.delayed(const Duration(seconds: 4));
   }
 
   Future<void> _initBluetoothAndPrinter() async {
@@ -73,6 +123,77 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
         });
       }
     } catch (_) {}
+  }
+
+  Future<void> _showPrinterSelectionDialog() async {
+    try {
+      List<bt.BluetoothDevice> bonded = await printer.getBondedDevices();
+      if (bonded.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('No hay impresoras emparejadas.'),
+              backgroundColor: Colors.orange),
+        );
+        return;
+      }
+
+      final bt.BluetoothDevice? chosen = await showDialog<bt.BluetoothDevice>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Seleccionar impresora'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: bonded.length,
+              itemBuilder: (context, index) {
+                final d = bonded[index];
+                return ListTile(
+                  title: Text(d.name ?? d.address ?? 'Desconocida'),
+                  subtitle: Text(d.address ?? ''),
+                  onTap: () => Navigator.of(ctx).pop(d),
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('Cancelar')),
+          ],
+        ),
+      );
+
+      if (chosen != null) {
+        setState(() {
+          selectedPrinter = chosen;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Impresora seleccionada: ${chosen.name}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Error al listar impresoras: $e'),
+            backgroundColor: Colors.red),
+      );
+    }
+  }
+
+  // Enviar ZPL vía RFCOMM usando flutter_bluetooth_serial
+  Future<bool> _sendZplRfcomm(String address, String zpl) async {
+    // Usar canal nativo (MainActivity) RFCOMM
+    final platform = MethodChannel('com.liverpool.turnos78/rfcomm');
+    try {
+      final bool? sent = await platform.invokeMethod('sendZpl', {
+        'address': address,
+        'zpl': zpl,
+      });
+      return sent == true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<String> _getNextTurnoTransaccion(String tipo) async {
@@ -142,19 +263,130 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
   }
 
   Future<void> _imprimirTurno(String numero, String fecha, String hora) async {
-    if (selectedPrinter == null) return;
+    // Si hay una impresora emparejada usando BlueThermalPrinter, intentar enviar ZPL por RFCOMM
+    if (selectedPrinter != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                'Usando impresora emparejada ${selectedPrinter!.name}...')),
+      );
+      try {
+        final String address = selectedPrinter!.address ?? '';
+        final String zpl = '''
+^XA
+^CI28
+^FO200,30^A0N,40,40^FB400,1,0,C,0^FDLIVERPOOL^FS
+^FO200,90^A0N,100,100^FB400,1,0,C,0^FD$numero^FS
+^FO200,210^A0N,30,30^FB400,1,0,C,0^FD$fecha $hora^FS
+^FO200,260^A0N,25,25^FB400,1,0,C,0^FD¡Gracias por tu preferencia!^FS
+^XZ
+''';
+
+        final sent = await _sendZplRfcomm(address, zpl);
+        if (sent) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Impresión enviada a ${selectedPrinter!.name}')),
+          );
+          return;
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(
+                    'Error enviando ZPL a ${selectedPrinter!.name}. Probando fallback BLE...')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  'Error imprimiendo via RFCOMM: $e. Probando fallback BLE...')),
+        );
+      }
+    }
+
+    // Fallback: intentar conectar por BLE a una Zebra y enviar ZPL
+    // Si no hay impresora/characteristic instalada, intentar autoconectar
+    if (zebraDevice == null || zebraCharacteristic == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+                'No hay impresora conectada por BLE. Intentando conectar...')),
+      );
+      try {
+        await _autoConnectZebra();
+      } catch (_) {}
+    }
+
+    if (zebraDevice == null || zebraCharacteristic == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('No se encontró impresora. Imprimir cancelado.'),
+            backgroundColor: Colors.red),
+      );
+      return;
+    }
+
+    // Mostrar que se está conectando/imprimiendo
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Conectando a impresora ${zebraDevice!.name}...')),
+    );
+
     try {
-      await printer.connect(selectedPrinter!);
-      await printer.printCustom('LIVERPOOL', 2, 1);
-      await printer.printNewLine();
-      await printer.printCustom(numero, 2, 1);
-      await printer.printNewLine();
-      await printer.printCustom('$fecha $hora', 1, 1);
-      await printer.printNewLine();
-      await printer.printCustom('¡Gracias por tu preferencia!', 1, 1);
-      await printer.printNewLine();
-      await printer.disconnect();
-    } catch (_) {}
+      if (!zebraConnected) {
+        try {
+          await zebraDevice!.connect();
+        } catch (_) {}
+        try {
+          final services = await zebraDevice!.discoverServices();
+          for (var service in services) {
+            for (var c in service.characteristics) {
+              if (c.properties.write) {
+                zebraCharacteristic = c;
+                zebraConnected = true;
+                break;
+              }
+            }
+            if (zebraCharacteristic != null) break;
+          }
+        } catch (_) {}
+      }
+
+      if (zebraCharacteristic == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+                  'No se encontró característica de escritura en la impresora.'),
+              backgroundColor: Colors.red),
+        );
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Imprimiendo...')),
+      );
+
+      String zpl = '''
+^XA
+^CI28
+^FO200,30^A0N,40,40^FB400,1,0,C,0^FDLIVERPOOL^FS
+^FO200,90^A0N,100,100^FB400,1,0,C,0^FD$numero^FS
+^FO200,210^A0N,30,30^FB400,1,0,C,0^FD$fecha $hora^FS
+^FO200,260^A0N,25,25^FB400,1,0,C,0^FD¡Gracias por tu preferencia!^FS
+^XZ
+''';
+
+      await zebraCharacteristic!.write(utf8.encode(zpl));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Impresión enviada a ${zebraDevice!.name}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Error imprimiendo: $e'),
+            backgroundColor: Colors.red),
+      );
+    }
   }
 
   void _mostrarDialogo(String numero, String fecha, String hora) {
@@ -255,14 +487,6 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
             );
-          },
-        ),
-        backgroundColor: Colors.pink,
-        foregroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            _pedirPassword(context);
           },
         ),
         actions: [
@@ -392,6 +616,32 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                                   : () => _solicitarTurno('RECOGER'),
                               size: buttonSize,
                               labelColor: Colors.white,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: isTablet ? 20 : 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Mostrar nombre de impresora predeterminada (no clickable)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                selectedPrinter?.name ??
+                                    'No hay impresora predeterminada',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            SizedBox(width: isTablet ? 24 : 12),
+                            TextButton(
+                              onPressed: _initPrinter,
+                              child: const Text('Refrescar'),
                             ),
                           ],
                         ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'historial_export_io.dart'
+    if (dart.library.html) 'historial_export_web.dart';
+import 'package:flutter/foundation.dart';
 
 class HistorialTurnosPage extends StatefulWidget {
   const HistorialTurnosPage({Key? key}) : super(key: key);
@@ -20,12 +20,12 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
     final excel = Excel.createExcel();
     final sheet = excel['Turnos'];
     sheet.appendRow([
-      'Turno',
-      'Tipo',
-      'Fecha',
-      'Hora Solicitud',
-      'Hora Finalización',
-      'Tiempo Transcurrido'
+      TextCellValue('Turno'),
+      TextCellValue('Tipo'),
+      TextCellValue('Fecha'),
+      TextCellValue('Hora Solicitud'),
+      TextCellValue('Hora Finalización'),
+      TextCellValue('Tiempo Transcurrido')
     ]);
     for (final doc in docs) {
       final ts = doc['timestamp_solicitud'];
@@ -57,28 +57,17 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
         horaFinal = fin.toString().replaceFirst('T', ' ').substring(0, 19);
       }
       sheet.appendRow([
-        doc['numero'] ?? '',
-        doc['tipo'] ?? '',
-        doc['fecha'] ?? '',
-        horaSolicitud,
-        horaFinal,
-        tiempo,
+        TextCellValue((doc['numero'] ?? '').toString()),
+        TextCellValue((doc['tipo'] ?? '').toString()),
+        TextCellValue((doc['fecha'] ?? '').toString()),
+        TextCellValue(horaSolicitud),
+        TextCellValue(horaFinal),
+        TextCellValue(tiempo),
       ]);
     }
     final bytes = excel.encode();
     if (bytes == null) return;
-    if (await Permission.storage.request().isGranted) {
-      final dir = await getExternalStorageDirectory();
-      final file = File('${dir!.path}/historial_turnos.xlsx');
-      await file.writeAsBytes(bytes);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Archivo guardado en: ${file.path}'),
-              backgroundColor: Colors.pink),
-        );
-      }
-    }
+    await exportarExcel(bytes, context);
     setState(() => _exportando = false);
   }
 
@@ -98,19 +87,20 @@ class _HistorialTurnosPageState extends State<HistorialTurnosPage> {
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.download),
-            tooltip: 'Descargar Excel',
-            onPressed: _exportando
-                ? null
-                : () async {
-                    final snapshot = await FirebaseFirestore.instance
-                        .collection('historial_cyc_turnos')
-                        .orderBy('hora_finalizacion', descending: true)
-                        .get();
-                    await _exportarExcel(snapshot.docs);
-                  },
-          ),
+          if (kIsWeb)
+            IconButton(
+              icon: const Icon(Icons.download),
+              tooltip: 'Descargar Excel',
+              onPressed: _exportando
+                  ? null
+                  : () async {
+                      final snapshot = await FirebaseFirestore.instance
+                          .collection('historial_cyc_turnos')
+                          .orderBy('hora_finalizacion', descending: true)
+                          .get();
+                      await _exportarExcel(snapshot.docs);
+                    },
+            ),
         ],
       ),
       body: Padding(

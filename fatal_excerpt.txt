@@ -1,0 +1,997 @@
+﻿
+  full_logcat.txt:20840:04-20 03:05:54.414 W/SingleHostAsyncVerifier( 2317): 	
+at 
+java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+  full_logcat.txt:20841:04-20 03:05:54.414 W/SingleHostAsyncVerifier( 2317): 	
+at 
+java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:644)
+  full_logcat.txt:20842:04-20 03:05:54.414 W/SingleHostAsyncVerifier( 2317): 	
+at anmg.run(:com.google.android.gms@242335041@24.23.35 (190800-646585959):8)
+  full_logcat.txt:20843:04-20 03:05:54.414 W/SingleHostAsyncVerifier( 2317): 	
+at java.lang.Thread.run(Thread.java:1012)
+  full_logcat.txt:20844:04-20 03:05:54.468 E/RoleControllerServiceImpl(  619): 
+Default/fallback role holder package doesn't qualify for the role, package: 
+com.google.android.gms.supervision, role: android.app.role.SYSTEM_SUPERVISION
+> full_logcat.txt:20845:04-20 03:05:54.511 D/AndroidRuntime( 3877): >>>>>> 
+START com.android.internal.os.RuntimeInit uid 1067 <<<<<<
+  full_logcat.txt:20846:04-20 03:05:54.546 E/app_process( 3877): Failed to 
+read cache-info from the default path: Permission denied
+> full_logcat.txt:20847:04-20 03:05:54.548 I/AndroidRuntime( 3877): Using 
+default boot image
+> full_logcat.txt:20848:04-20 03:05:54.548 I/AndroidRuntime( 3877): Leaving 
+lock profiling enabled
+  full_logcat.txt:20849:04-20 03:05:54.544 W/app_process( 3877): type=1400 
+audit(0.0:49): avc:  denied  { create } for  anonclass=[userfaultfd] 
+scontext=u:r:incidentd:s0 tcontext=u:object_r:incidentd:s0 tclass=anon_inode 
+permissive=0
+  full_logcat.txt:20850:04-20 03:05:54.578 E/crash_dump64( 3837): failed to 
+get the guest state header for thread 856: Bad address
+  full_logcat.txt:20851:04-20 03:05:54.579 W/Role    (  619): Default holder 
+doesn't have required signing certificate: com.google.android.apps.work.clouddp
+c:23962F4B43B9857638EA66F4D419518EAE282491ACDA4B94707BD59003C45E58
+  full_logcat.txt:20852:04-20 03:05:54.614 E/crash_dump64( 3837): failed to 
+get the guest state header for thread 857: Bad address
+  full_logcat.txt:20853:04-20 03:05:54.666 E/app_process( 3877): Default boot 
+image check failed, could not stat: 
+/data/misc/apexdata/com.android.art/dalvik-cache/x86_64/boot.art: Permission 
+denied
+  full_logcat.txt:22258:04-20 03:06:13.060 W/keystore2(  161): 
+system/security/keystore2/watchdog/src/lib.rs:124 - and all 1 records below.
+  full_logcat.txt:22259:04-20 03:06:13.060 W/keystore2(  161): 
+system/security/keystore2/watchdog/src/lib.rs:164 - ThreadId(6) Calling 
+get_rkpd_attestation_key() Pending: 4.5204913s Overdue 4.0205291s
+  full_logcat.txt:22260:04-20 03:06:13.060 W/keystore2(  161): 
+system/security/keystore2/watchdog/src/lib.rs:175 - ### Keystore Watchdog 
+report - END ###
+  full_logcat.txt:22261:04-20 03:06:13.078 I/Finsky:background( 2804): [2] 
+nii.onSubscriptionsChanged(6): onSubscriptionsChanged
+  full_logcat.txt:22262:04-20 03:06:13.105 D/nativeloader( 3877): Load 
+libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering 
+for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+> full_logcat.txt:22263:04-20 03:06:13.108 D/AndroidRuntime( 3877): Calling 
+main entry com.android.commands.incident.IncidentHelper
+  full_logcat.txt:22264:04-20 03:06:13.112 I/IncidentHelper( 3877): Args: 
+[-l,run,persisted_logs,--limit,10MB]
+  full_logcat.txt:22265:04-20 03:06:13.125 W/IH_PersistLog( 3877): Skip dump. 
+/data/misc/logd does not exist.
+> full_logcat.txt:22266:04-20 03:06:13.125 D/AndroidRuntime( 3877): Shutting 
+down VM
+  full_logcat.txt:22267:04-20 03:06:13.157 I/Finsky  ( 2256): [54] 
+ajnm.apply(100): [PLUS] Adding payload
+  full_logcat.txt:22268:04-20 03:06:13.158 I/Finsky  ( 2256): [54] 
+alpz.G(106): [PLUS] Triggering sync due to NOW urgency payload
+  full_logcat.txt:22269:04-20 03:06:13.159 I/Finsky  ( 2256): [57] ajsn.a(11): 
+[PLUS] Syncing for users with urgency above: NOW
+  full_logcat.txt:22270:04-20 03:06:13.160 E/Finsky  ( 2256): [57] mwv.c(59): 
+Unexpected android-id = 0
+  full_logcat.txt:22271:04-20 03:06:13.217 D/ImsResolver( 1412): 
+maybeAddedImsService, packageName: com.android.vending
+  full_logcat.txt:73503:04-20 03:24:43.174 E/TransactionExecutor( 7652): 
+tId:887546884     
+LaunchActivityItem{activityToken=android.os.BinderProxy@d17eb07,intent=Intent 
+{ act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] 
+flg=0x30000000 cmp=com.liverpool.turnos78/.MainActivity (has extras) 
+},ident=24893080,info=ActivityInfo{e461759 
+com.liverpool.turnos78.MainActivity},curConfig={1.0 310mcc260mnc [en_US] ldltr 
+sw360dp w360dp h640dp 320dpi nrml long port finger qwerty/v/v dpad/v 
+winConfig={ mBounds=Rect(0, 0 - 720, 1280) mAppBounds=Rect(0, 0 - 720, 1280) 
+mMaxBounds=Rect(0, 0 - 720, 1280) mDisplayRotation=ROTATION_0 
+mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined 
+mRotation=ROTATION_0} as.2 s.23 fontWeightAdjustment=0},overrideConfig={1.0 
+310mcc260mnc [en_US] ldltr sw360dp w360dp h640dp 320dpi nrml long port finger 
+qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 720, 1280) 
+mAppBounds=Rect(0, 0 - 720, 1280) mMaxBounds=Rect(0, 0 - 720, 1280) 
+mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard 
+mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.3 fontWeightAdjustment=0},d
+eviceId=0,referrer=com.android.shell,procState=2,state=null,persistentState=nul
+l,pendingResults=null,pendingNewIntents=null,sceneTransitionInfo=null,profilerI
+nfo=null,assistToken=android.os.BinderProxy@bf177d2,shareableActivityToken=andr
+oid.os.BinderProxy@6be30a3,activityWindowInfo=ActivityWindowInfo{isEmbedded=fal
+se, taskBounds=Rect(0, 0 - 720, 1280), taskFragmentBounds=Rect(0, 0 - 720, 
+1280)}}
+  full_logcat.txt:73504:04-20 03:24:43.174 E/TransactionExecutor( 7652): 
+tId:887546884     ResumeActivityItem{mActivityToken=android.os.BinderProxy@d17e
+b07,procState=-1,updateProcState=false,isForward=true,shouldSendCompatFakeFocus
+=false}
+  full_logcat.txt:73505:04-20 03:24:43.174 E/TransactionExecutor( 7652): 
+tId:887546884     Target activity: Not found for token: 
+android.os.BinderProxy@d17eb07
+  full_logcat.txt:73506:04-20 03:24:43.174 E/TransactionExecutor( 7652): 
+tId:887546884   ]
+  full_logcat.txt:73507:04-20 03:24:43.174 E/TransactionExecutor( 7652): 
+tId:887546884 }
+> full_logcat.txt:73508:04-20 03:24:43.177 D/AndroidRuntime( 7652): Shutting 
+down VM
+> full_logcat.txt:73509:04-20 03:24:43.189 E/AndroidRuntime( 7652): FATAL 
+EXCEPTION: main
+> full_logcat.txt:73510:04-20 03:24:43.189 E/AndroidRuntime( 7652): Process: 
+com.liverpool.turnos78, PID: 7652
+> full_logcat.txt:73511:04-20 03:24:43.189 E/AndroidRuntime( 7652): 
+java.lang.RuntimeException: Unable to instantiate activity 
+ComponentInfo{com.liverpool.turnos78/com.liverpool.turnos78.MainActivity}: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:73512:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3954)
+> full_logcat.txt:73513:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4235)
+> full_logcat.txt:73514:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at android
+.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:112)
+> full_logcat.txt:73515:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at android
+.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionE
+xecutor.java:174)
+> full_logcat.txt:73516:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at android
+.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionE
+xecutor.java:109)
+> full_logcat.txt:73517:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at android
+.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+> full_logcat.txt:73518:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+> full_logcat.txt:73519:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.os.Handler.dispatchMessage(Handler.java:107)
+> full_logcat.txt:73520:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.os.Looper.loopOnce(Looper.java:232)
+> full_logcat.txt:73521:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.os.Looper.loop(Looper.java:317)
+> full_logcat.txt:73522:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.app.ActivityThread.main(ActivityThread.java:8705)
+> full_logcat.txt:73523:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+java.lang.reflect.Method.invoke(Native Method)
+> full_logcat.txt:73524:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at com.and
+roid.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+> full_logcat.txt:73525:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+> full_logcat.txt:73526:04-20 03:24:43.189 E/AndroidRuntime( 7652): Caused by: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:73527:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+> full_logcat.txt:73528:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+> full_logcat.txt:73529:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+> full_logcat.txt:73530:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at android
+.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+> full_logcat.txt:73531:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at android
+x.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:4
+4)
+> full_logcat.txt:73532:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.app.Instrumentation.newActivity(Instrumentation.java:1448)
+> full_logcat.txt:73533:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3941)
+> full_logcat.txt:73534:04-20 03:24:43.189 E/AndroidRuntime( 7652): 	... 13 
+more
+  full_logcat.txt:73535:04-20 03:24:43.202 I/DropBoxManagerService(  619): add 
+tag=data_app_crash isTagEnabled=true flags=0x2
+  full_logcat.txt:73536:04-20 03:24:43.235 W/ActivityTaskManager(  619):   
+Force finishing activity com.liverpool.turnos78/.MainActivity
+  full_logcat.txt:73537:04-20 03:24:43.251 V/WindowManagerShell( 1240): 
+Transition requested (#34): android.os.BinderProxy@fb84465 
+TransitionRequestInfo { type = CLOSE, triggerTask = null, pipTask = null, 
+remoteTransition = null, displayChange = null, flags = 16, debugId = 34 }
+  full_logcat.txt:73538:04-20 03:24:43.256 D/CompatChangeReporter(  619): 
+Compat change id reported: 296060945; UID 10144; state: ENABLED
+  full_logcat.txt:73539:04-20 03:24:43.261 I/Process ( 7652): Sending signal. 
+PID: 7652 SIG: 9
+  full_logcat.txt:79046:04-20 03:29:32.914 E/TransactionExecutor( 7883): 
+tId:-1147367485     
+LaunchActivityItem{activityToken=android.os.BinderProxy@b356434,intent=Intent 
+{ act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] 
+flg=0x30100000 cmp=com.liverpool.turnos78/.MainActivity (has extras) 
+},ident=213642402,info=ActivityInfo{6cb3f1e 
+com.liverpool.turnos78.MainActivity},curConfig={1.0 310mcc260mnc [en_US] ldltr 
+sw360dp w360dp h640dp 320dpi nrml long port finger qwerty/v/v dpad/v 
+winConfig={ mBounds=Rect(0, 0 - 720, 1280) mAppBounds=Rect(0, 0 - 720, 1280) 
+mMaxBounds=Rect(0, 0 - 720, 1280) mDisplayRotation=ROTATION_0 
+mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined 
+mRotation=ROTATION_0} as.2 s.23 fontWeightAdjustment=0},overrideConfig={1.0 
+310mcc260mnc [en_US] ldltr sw360dp w360dp h640dp 320dpi nrml long port finger 
+qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 720, 1280) 
+mAppBounds=Rect(0, 0 - 720, 1280) mMaxBounds=Rect(0, 0 - 720, 1280) 
+mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard 
+mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.3 fontWeightAdjustment=0},d
+eviceId=0,referrer=com.android.shell,procState=2,state=null,persistentState=nul
+l,pendingResults=null,pendingNewIntents=null,sceneTransitionInfo=null,profilerI
+nfo=null,assistToken=android.os.BinderProxy@6be30a3,shareableActivityToken=andr
+oid.os.BinderProxy@2de8fa0,activityWindowInfo=ActivityWindowInfo{isEmbedded=fal
+se, taskBounds=Rect(0, 0 - 720, 1280), taskFragmentBounds=Rect(0, 0 - 720, 
+1280)}}
+  full_logcat.txt:79047:04-20 03:29:32.914 E/TransactionExecutor( 7883): 
+tId:-1147367485     ResumeActivityItem{mActivityToken=android.os.BinderProxy@b3
+56434,procState=-1,updateProcState=false,isForward=true,shouldSendCompatFakeFoc
+us=false}
+  full_logcat.txt:79048:04-20 03:29:32.914 E/TransactionExecutor( 7883): 
+tId:-1147367485     Target activity: Not found for token: 
+android.os.BinderProxy@b356434
+  full_logcat.txt:79049:04-20 03:29:32.914 E/TransactionExecutor( 7883): 
+tId:-1147367485   ]
+  full_logcat.txt:79050:04-20 03:29:32.914 E/TransactionExecutor( 7883): 
+tId:-1147367485 }
+> full_logcat.txt:79051:04-20 03:29:32.917 D/AndroidRuntime( 7883): Shutting 
+down VM
+> full_logcat.txt:79052:04-20 03:29:32.922 E/AndroidRuntime( 7883): FATAL 
+EXCEPTION: main
+> full_logcat.txt:79053:04-20 03:29:32.922 E/AndroidRuntime( 7883): Process: 
+com.liverpool.turnos78, PID: 7883
+> full_logcat.txt:79054:04-20 03:29:32.922 E/AndroidRuntime( 7883): 
+java.lang.RuntimeException: Unable to instantiate activity 
+ComponentInfo{com.liverpool.turnos78/com.liverpool.turnos78.MainActivity}: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:79055:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3954)
+> full_logcat.txt:79056:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4235)
+> full_logcat.txt:79057:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at android
+.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:112)
+> full_logcat.txt:79058:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at android
+.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionE
+xecutor.java:174)
+> full_logcat.txt:79059:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at android
+.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionE
+xecutor.java:109)
+> full_logcat.txt:79060:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at android
+.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+> full_logcat.txt:79061:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+> full_logcat.txt:79062:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.os.Handler.dispatchMessage(Handler.java:107)
+> full_logcat.txt:79063:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.os.Looper.loopOnce(Looper.java:232)
+> full_logcat.txt:79064:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.os.Looper.loop(Looper.java:317)
+> full_logcat.txt:79065:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.app.ActivityThread.main(ActivityThread.java:8705)
+> full_logcat.txt:79066:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+java.lang.reflect.Method.invoke(Native Method)
+> full_logcat.txt:79067:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at com.and
+roid.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+> full_logcat.txt:79068:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+> full_logcat.txt:79069:04-20 03:29:32.922 E/AndroidRuntime( 7883): Caused by: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:79070:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+> full_logcat.txt:79071:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+> full_logcat.txt:79072:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+> full_logcat.txt:79073:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at android
+.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+> full_logcat.txt:79074:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at android
+x.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:4
+4)
+> full_logcat.txt:79075:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.app.Instrumentation.newActivity(Instrumentation.java:1448)
+> full_logcat.txt:79076:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3941)
+> full_logcat.txt:79077:04-20 03:29:32.922 E/AndroidRuntime( 7883): 	... 13 
+more
+  full_logcat.txt:79078:04-20 03:29:32.935 D/EGL_emulation( 1546): 
+app_time_stats: avg=440.90ms min=1.97ms max=7017.87ms count=18
+  full_logcat.txt:79079:04-20 03:29:32.944 I/DropBoxManagerService(  619): add 
+tag=data_app_crash isTagEnabled=true flags=0x2
+  full_logcat.txt:79080:04-20 03:29:32.945 W/ActivityTaskManager(  619):   
+Force finishing activity com.liverpool.turnos78/.MainActivity
+  full_logcat.txt:79081:04-20 03:29:32.973 V/WindowManagerShell( 1240): 
+Transition requested (#37): android.os.BinderProxy@ed9829c 
+TransitionRequestInfo { type = CLOSE, triggerTask = null, pipTask = null, 
+remoteTransition = null, displayChange = null, flags = 16, debugId = 37 }
+  full_logcat.txt:79082:04-20 03:29:32.995 I/Process ( 7883): Sending signal. 
+PID: 7883 SIG: 9
+  full_logcat.txt:81148:04-20 03:31:27.974 E/TransactionExecutor( 7969): 
+tId:-703054195     
+LaunchActivityItem{activityToken=android.os.BinderProxy@b356434,intent=Intent 
+{ act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] 
+flg=0x30100000 cmp=com.liverpool.turnos78/.MainActivity (has extras) 
+},ident=174911271,info=ActivityInfo{6cb3f1e 
+com.liverpool.turnos78.MainActivity},curConfig={1.0 310mcc260mnc [en_US] ldltr 
+sw360dp w360dp h640dp 320dpi nrml long port finger qwerty/v/v dpad/v 
+winConfig={ mBounds=Rect(0, 0 - 720, 1280) mAppBounds=Rect(0, 0 - 720, 1280) 
+mMaxBounds=Rect(0, 0 - 720, 1280) mDisplayRotation=ROTATION_0 
+mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined 
+mRotation=ROTATION_0} as.2 s.23 fontWeightAdjustment=0},overrideConfig={1.0 
+310mcc260mnc [en_US] ldltr sw360dp w360dp h640dp 320dpi nrml long port finger 
+qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 720, 1280) 
+mAppBounds=Rect(0, 0 - 720, 1280) mMaxBounds=Rect(0, 0 - 720, 1280) 
+mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard 
+mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.3 fontWeightAdjustment=0},d
+eviceId=0,referrer=com.android.shell,procState=2,state=null,persistentState=nul
+l,pendingResults=null,pendingNewIntents=null,sceneTransitionInfo=null,profilerI
+nfo=null,assistToken=android.os.BinderProxy@6be30a3,shareableActivityToken=andr
+oid.os.BinderProxy@2de8fa0,activityWindowInfo=ActivityWindowInfo{isEmbedded=fal
+se, taskBounds=Rect(0, 0 - 720, 1280), taskFragmentBounds=Rect(0, 0 - 720, 
+1280)}}
+  full_logcat.txt:81149:04-20 03:31:27.974 E/TransactionExecutor( 7969): 
+tId:-703054195     ResumeActivityItem{mActivityToken=android.os.BinderProxy@b35
+6434,procState=-1,updateProcState=false,isForward=true,shouldSendCompatFakeFocu
+s=false}
+  full_logcat.txt:81150:04-20 03:31:27.974 E/TransactionExecutor( 7969): 
+tId:-703054195     Target activity: Not found for token: 
+android.os.BinderProxy@b356434
+  full_logcat.txt:81151:04-20 03:31:27.974 E/TransactionExecutor( 7969): 
+tId:-703054195   ]
+  full_logcat.txt:81152:04-20 03:31:27.974 E/TransactionExecutor( 7969): 
+tId:-703054195 }
+> full_logcat.txt:81153:04-20 03:31:27.974 D/AndroidRuntime( 7969): Shutting 
+down VM
+> full_logcat.txt:81154:04-20 03:31:27.981 E/AndroidRuntime( 7969): FATAL 
+EXCEPTION: main
+> full_logcat.txt:81155:04-20 03:31:27.981 E/AndroidRuntime( 7969): Process: 
+com.liverpool.turnos78, PID: 7969
+> full_logcat.txt:81156:04-20 03:31:27.981 E/AndroidRuntime( 7969): 
+java.lang.RuntimeException: Unable to instantiate activity 
+ComponentInfo{com.liverpool.turnos78/com.liverpool.turnos78.MainActivity}: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:81157:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3954)
+> full_logcat.txt:81158:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4235)
+> full_logcat.txt:81159:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at android
+.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:112)
+> full_logcat.txt:81160:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at android
+.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionE
+xecutor.java:174)
+> full_logcat.txt:81161:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at android
+.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionE
+xecutor.java:109)
+> full_logcat.txt:81162:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at android
+.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+> full_logcat.txt:81163:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+> full_logcat.txt:81164:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.os.Handler.dispatchMessage(Handler.java:107)
+> full_logcat.txt:81165:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.os.Looper.loopOnce(Looper.java:232)
+> full_logcat.txt:81166:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.os.Looper.loop(Looper.java:317)
+> full_logcat.txt:81167:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.app.ActivityThread.main(ActivityThread.java:8705)
+> full_logcat.txt:81168:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+java.lang.reflect.Method.invoke(Native Method)
+> full_logcat.txt:81169:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at com.and
+roid.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+> full_logcat.txt:81170:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+> full_logcat.txt:81171:04-20 03:31:27.981 E/AndroidRuntime( 7969): Caused by: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:81172:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+> full_logcat.txt:81173:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+> full_logcat.txt:81174:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+> full_logcat.txt:81175:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at android
+.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+> full_logcat.txt:81176:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at android
+x.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:4
+4)
+> full_logcat.txt:81177:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.app.Instrumentation.newActivity(Instrumentation.java:1448)
+> full_logcat.txt:81178:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3941)
+> full_logcat.txt:81179:04-20 03:31:27.981 E/AndroidRuntime( 7969): 	... 13 
+more
+  full_logcat.txt:81180:04-20 03:31:27.985 V/WindowManagerShell( 1240): 
+onTransitionReady(transaction=2658584757497)
+  full_logcat.txt:81181:04-20 03:31:27.995 V/WindowManagerShell( 1240): 
+onTransitionReady (#38) android.os.BinderProxy@cb5d290: {id=38 t=OPEN f=0x0 
+trk=0 r=[0@Point(0, 0)] 
+c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@fd787b5} m=TO_FRONT 
+f=MOVE_TO_TOP leash=Surface(name=Task=11)/@0xa187c3e sb=Rect(0, 0 - 720, 1280) 
+eb=Rect(0, 0 - 720, 1280) d=0 
+taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@51c1e4a} 
+m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x83bfa9f sb=Rect(0, 0 
+- 720, 1280) eb=Rect(0, 0 - 720, 1280) d=0 taskParent=-1}]}
+  full_logcat.txt:81182:04-20 03:31:27.999 I/DropBoxManagerService(  619): add 
+tag=data_app_crash isTagEnabled=true flags=0x2
+  full_logcat.txt:81183:04-20 03:31:28.003 W/ActivityTaskManager(  619):   
+Force finishing activity com.liverpool.turnos78/.MainActivity
+  full_logcat.txt:81184:04-20 03:31:28.011 V/WindowManagerShell( 1240): 
+Playing animation for (#38) android.os.BinderProxy@cb5d290@0
+  full_logcat.txt:83281:04-20 03:32:12.979 E/TransactionExecutor( 8135): 
+tId:-149597645     
+LaunchActivityItem{activityToken=android.os.BinderProxy@b356434,intent=Intent 
+{ act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] 
+flg=0x30100000 cmp=com.liverpool.turnos78/.MainActivity (has extras) 
+},ident=213594330,info=ActivityInfo{6cb3f1e 
+com.liverpool.turnos78.MainActivity},curConfig={1.0 310mcc260mnc [en_US] ldltr 
+sw360dp w360dp h640dp 320dpi nrml long port finger qwerty/v/v dpad/v 
+winConfig={ mBounds=Rect(0, 0 - 720, 1280) mAppBounds=Rect(0, 0 - 720, 1280) 
+mMaxBounds=Rect(0, 0 - 720, 1280) mDisplayRotation=ROTATION_0 
+mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined 
+mRotation=ROTATION_0} as.2 s.23 fontWeightAdjustment=0},overrideConfig={1.0 
+310mcc260mnc [en_US] ldltr sw360dp w360dp h640dp 320dpi nrml long port finger 
+qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 720, 1280) 
+mAppBounds=Rect(0, 0 - 720, 1280) mMaxBounds=Rect(0, 0 - 720, 1280) 
+mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard 
+mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.3 fontWeightAdjustment=0},d
+eviceId=0,referrer=com.android.shell,procState=2,state=null,persistentState=nul
+l,pendingResults=null,pendingNewIntents=null,sceneTransitionInfo=null,profilerI
+nfo=null,assistToken=android.os.BinderProxy@6be30a3,shareableActivityToken=andr
+oid.os.BinderProxy@2de8fa0,activityWindowInfo=ActivityWindowInfo{isEmbedded=fal
+se, taskBounds=Rect(0, 0 - 720, 1280), taskFragmentBounds=Rect(0, 0 - 720, 
+1280)}}
+  full_logcat.txt:83282:04-20 03:32:12.979 E/TransactionExecutor( 8135): 
+tId:-149597645     ResumeActivityItem{mActivityToken=android.os.BinderProxy@b35
+6434,procState=-1,updateProcState=false,isForward=true,shouldSendCompatFakeFocu
+s=false}
+  full_logcat.txt:83283:04-20 03:32:12.979 E/TransactionExecutor( 8135): 
+tId:-149597645     Target activity: Not found for token: 
+android.os.BinderProxy@b356434
+  full_logcat.txt:83284:04-20 03:32:12.979 E/TransactionExecutor( 8135): 
+tId:-149597645   ]
+  full_logcat.txt:83285:04-20 03:32:12.979 E/TransactionExecutor( 8135): 
+tId:-149597645 }
+> full_logcat.txt:83286:04-20 03:32:12.980 D/AndroidRuntime( 8135): Shutting 
+down VM
+> full_logcat.txt:83287:04-20 03:32:12.983 E/AndroidRuntime( 8135): FATAL 
+EXCEPTION: main
+> full_logcat.txt:83288:04-20 03:32:12.983 E/AndroidRuntime( 8135): Process: 
+com.liverpool.turnos78, PID: 8135
+> full_logcat.txt:83289:04-20 03:32:12.983 E/AndroidRuntime( 8135): 
+java.lang.RuntimeException: Unable to instantiate activity 
+ComponentInfo{com.liverpool.turnos78/com.liverpool.turnos78.MainActivity}: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:83290:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3954)
+> full_logcat.txt:83291:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4235)
+> full_logcat.txt:83292:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at android
+.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:112)
+> full_logcat.txt:83293:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at android
+.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionE
+xecutor.java:174)
+> full_logcat.txt:83294:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at android
+.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionE
+xecutor.java:109)
+> full_logcat.txt:83295:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at android
+.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+> full_logcat.txt:83296:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+> full_logcat.txt:83297:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.os.Handler.dispatchMessage(Handler.java:107)
+> full_logcat.txt:83298:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.os.Looper.loopOnce(Looper.java:232)
+> full_logcat.txt:83299:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.os.Looper.loop(Looper.java:317)
+> full_logcat.txt:83300:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.app.ActivityThread.main(ActivityThread.java:8705)
+> full_logcat.txt:83301:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+java.lang.reflect.Method.invoke(Native Method)
+> full_logcat.txt:83302:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at com.and
+roid.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+> full_logcat.txt:83303:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+> full_logcat.txt:83304:04-20 03:32:12.983 E/AndroidRuntime( 8135): Caused by: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:83305:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+> full_logcat.txt:83306:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+> full_logcat.txt:83307:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+> full_logcat.txt:83308:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at android
+.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+> full_logcat.txt:83309:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at android
+x.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:4
+4)
+> full_logcat.txt:83310:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.app.Instrumentation.newActivity(Instrumentation.java:1448)
+> full_logcat.txt:83311:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3941)
+> full_logcat.txt:83312:04-20 03:32:12.983 E/AndroidRuntime( 8135): 	... 13 
+more
+  full_logcat.txt:83313:04-20 03:32:12.984 W/UserManagerService(  619): 
+Requested status bar icon for non-badged user 0
+  full_logcat.txt:83314:04-20 03:32:13.001 I/DropBoxManagerService(  619): add 
+tag=data_app_crash isTagEnabled=true flags=0x2
+  full_logcat.txt:83315:04-20 03:32:13.009 W/ActivityTaskManager(  619):   
+Force finishing activity com.liverpool.turnos78/.MainActivity
+  full_logcat.txt:83316:04-20 03:32:13.018 D/EGL_emulation( 1546): 
+app_time_stats: avg=97.82ms min=6.74ms max=2223.22ms count=30
+  full_logcat.txt:83317:04-20 03:32:13.022 I/RanchuHwc(  373): 
+logCompositionFallbackIfChanged: layer 96 CompositionType fallback from 2 to 1
+  full_logcat.txt:83536:04-20 03:32:15.657 E/TransactionExecutor( 8163): 
+tId:67190863     
+LaunchActivityItem{activityToken=android.os.BinderProxy@b356434,intent=Intent 
+{ act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] 
+flg=0x30100000 cmp=com.liverpool.turnos78/.MainActivity (has extras) 
+},ident=84547752,info=ActivityInfo{6cb3f1e 
+com.liverpool.turnos78.MainActivity},curConfig={1.0 310mcc260mnc [en_US] ldltr 
+sw360dp w360dp h640dp 320dpi nrml long port finger qwerty/v/v dpad/v 
+winConfig={ mBounds=Rect(0, 0 - 720, 1280) mAppBounds=Rect(0, 0 - 720, 1280) 
+mMaxBounds=Rect(0, 0 - 720, 1280) mDisplayRotation=ROTATION_0 
+mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined 
+mRotation=ROTATION_0} as.2 s.23 fontWeightAdjustment=0},overrideConfig={1.0 
+310mcc260mnc [en_US] ldltr sw360dp w360dp h640dp 320dpi nrml long port finger 
+qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 720, 1280) 
+mAppBounds=Rect(0, 0 - 720, 1280) mMaxBounds=Rect(0, 0 - 720, 1280) 
+mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard 
+mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.3 fontWeightAdjustment=0},d
+eviceId=0,referrer=com.android.shell,procState=2,state=null,persistentState=nul
+l,pendingResults=null,pendingNewIntents=null,sceneTransitionInfo=null,profilerI
+nfo=null,assistToken=android.os.BinderProxy@6be30a3,shareableActivityToken=andr
+oid.os.BinderProxy@2de8fa0,activityWindowInfo=ActivityWindowInfo{isEmbedded=fal
+se, taskBounds=Rect(0, 0 - 720, 1280), taskFragmentBounds=Rect(0, 0 - 720, 
+1280)}}
+  full_logcat.txt:83537:04-20 03:32:15.657 E/TransactionExecutor( 8163): 
+tId:67190863     ResumeActivityItem{mActivityToken=android.os.BinderProxy@b3564
+34,procState=-1,updateProcState=false,isForward=true,shouldSendCompatFakeFocus=
+false}
+  full_logcat.txt:83538:04-20 03:32:15.657 E/TransactionExecutor( 8163): 
+tId:67190863     Target activity: Not found for token: 
+android.os.BinderProxy@b356434
+  full_logcat.txt:83539:04-20 03:32:15.657 E/TransactionExecutor( 8163): 
+tId:67190863   ]
+  full_logcat.txt:83540:04-20 03:32:15.657 E/TransactionExecutor( 8163): 
+tId:67190863 }
+> full_logcat.txt:83541:04-20 03:32:15.658 D/AndroidRuntime( 8163): Shutting 
+down VM
+  full_logcat.txt:83542:04-20 03:32:15.662 W/UserManagerService(  619): 
+Requested status bar icon for non-badged user 0
+> full_logcat.txt:83543:04-20 03:32:15.662 E/AndroidRuntime( 8163): FATAL 
+EXCEPTION: main
+> full_logcat.txt:83544:04-20 03:32:15.662 E/AndroidRuntime( 8163): Process: 
+com.liverpool.turnos78, PID: 8163
+> full_logcat.txt:83545:04-20 03:32:15.662 E/AndroidRuntime( 8163): 
+java.lang.RuntimeException: Unable to instantiate activity 
+ComponentInfo{com.liverpool.turnos78/com.liverpool.turnos78.MainActivity}: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:83546:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3954)
+> full_logcat.txt:83547:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4235)
+> full_logcat.txt:83548:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at android
+.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:112)
+> full_logcat.txt:83549:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at android
+.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionE
+xecutor.java:174)
+> full_logcat.txt:83550:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at android
+.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionE
+xecutor.java:109)
+> full_logcat.txt:83551:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at android
+.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+> full_logcat.txt:83552:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+> full_logcat.txt:83553:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.os.Handler.dispatchMessage(Handler.java:107)
+> full_logcat.txt:83554:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.os.Looper.loopOnce(Looper.java:232)
+> full_logcat.txt:83555:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.os.Looper.loop(Looper.java:317)
+> full_logcat.txt:83556:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.app.ActivityThread.main(ActivityThread.java:8705)
+> full_logcat.txt:83557:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+java.lang.reflect.Method.invoke(Native Method)
+> full_logcat.txt:83558:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at com.and
+roid.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+> full_logcat.txt:83559:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+> full_logcat.txt:83560:04-20 03:32:15.662 E/AndroidRuntime( 8163): Caused by: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:83561:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+> full_logcat.txt:83562:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+> full_logcat.txt:83563:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+> full_logcat.txt:83564:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at android
+.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+> full_logcat.txt:83565:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at android
+x.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:4
+4)
+> full_logcat.txt:83566:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.app.Instrumentation.newActivity(Instrumentation.java:1448)
+> full_logcat.txt:83567:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3941)
+> full_logcat.txt:83568:04-20 03:32:15.662 E/AndroidRuntime( 8163): 	... 13 
+more
+  full_logcat.txt:83569:04-20 03:32:15.685 V/WindowManagerShell( 1240):  
+animated by firstHandler
+  full_logcat.txt:83570:04-20 03:32:15.686 W/ActivityTaskManager(  619):   
+Force finishing activity com.liverpool.turnos78/.MainActivity
+  full_logcat.txt:83571:04-20 03:32:15.689 I/DropBoxManagerService(  619): add 
+tag=data_app_crash isTagEnabled=true flags=0x2
+  full_logcat.txt:83572:04-20 03:32:15.693 V/WindowManagerShell( 1240): 
+Transition requested (#48): android.os.BinderProxy@6b40460 
+TransitionRequestInfo { type = CLOSE, triggerTask = null, pipTask = null, 
+remoteTransition = null, displayChange = null, flags = 16, debugId = 48 }
+  full_logcat.txt:83573:04-20 03:32:15.706 I/RanchuHwc(  373): 
+logCompositionFallbackIfChanged: layer 100 CompositionType fallback from 2 to 1
+  full_logcat.txt:83788:04-20 03:32:17.467 E/TransactionExecutor( 8186): 
+tId:-227643619   ]
+  full_logcat.txt:83789:04-20 03:32:17.467 E/TransactionExecutor( 8186): 
+tId:-227643619 }
+  full_logcat.txt:83790:04-20 03:32:17.467 V/WindowManagerShell( 1240):  try 
+firstHandler com.android.wm.shell.transition.DefaultMixedHandler@b4709d8
+  full_logcat.txt:83791:04-20 03:32:17.467 V/WindowManagerShell( 1240): Mixed 
+transition for opening an intent with a remote transition and PIP #49
+  full_logcat.txt:83792:04-20 03:32:17.467 V/WindowManagerShell( 1240):  
+Delegate animation for (#49) to RemoteTransition { remoteTransition = 
+android.window.IRemoteTransition$Stub$Proxy@d76368d, appThread = 
+android.app.IApplicationThread$Stub$Proxy@e026042, debugName = QuickstepLaunch 
+}
+> full_logcat.txt:83793:04-20 03:32:17.469 D/AndroidRuntime( 8186): Shutting 
+down VM
+> full_logcat.txt:83794:04-20 03:32:17.473 E/AndroidRuntime( 8186): FATAL 
+EXCEPTION: main
+> full_logcat.txt:83795:04-20 03:32:17.473 E/AndroidRuntime( 8186): Process: 
+com.liverpool.turnos78, PID: 8186
+> full_logcat.txt:83796:04-20 03:32:17.473 E/AndroidRuntime( 8186): 
+java.lang.RuntimeException: Unable to instantiate activity 
+ComponentInfo{com.liverpool.turnos78/com.liverpool.turnos78.MainActivity}: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:83797:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3954)
+> full_logcat.txt:83798:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4235)
+> full_logcat.txt:83799:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at android
+.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:112)
+> full_logcat.txt:83800:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at android
+.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionE
+xecutor.java:174)
+> full_logcat.txt:83801:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at android
+.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionE
+xecutor.java:109)
+> full_logcat.txt:83802:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at android
+.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+> full_logcat.txt:83803:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+> full_logcat.txt:83804:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.os.Handler.dispatchMessage(Handler.java:107)
+> full_logcat.txt:83805:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.os.Looper.loopOnce(Looper.java:232)
+> full_logcat.txt:83806:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.os.Looper.loop(Looper.java:317)
+> full_logcat.txt:83807:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.app.ActivityThread.main(ActivityThread.java:8705)
+> full_logcat.txt:83808:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+java.lang.reflect.Method.invoke(Native Method)
+> full_logcat.txt:83809:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at com.and
+roid.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+> full_logcat.txt:83810:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+> full_logcat.txt:83811:04-20 03:32:17.473 E/AndroidRuntime( 8186): Caused by: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:83812:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+> full_logcat.txt:83813:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+> full_logcat.txt:83814:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+> full_logcat.txt:83815:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at android
+.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+> full_logcat.txt:83816:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at android
+x.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:4
+4)
+> full_logcat.txt:83817:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.app.Instrumentation.newActivity(Instrumentation.java:1448)
+> full_logcat.txt:83818:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3941)
+> full_logcat.txt:83819:04-20 03:32:17.473 E/AndroidRuntime( 8186): 	... 13 
+more
+  full_logcat.txt:83820:04-20 03:32:17.476 V/WindowManagerShell( 1240):  
+animated by firstHandler
+  full_logcat.txt:83821:04-20 03:32:17.476 W/UserManagerService(  619): 
+Requested status bar icon for non-badged user 0
+  full_logcat.txt:83822:04-20 03:32:17.488 W/ActivityTaskManager(  619):   
+Force finishing activity com.liverpool.turnos78/.MainActivity
+  full_logcat.txt:83823:04-20 03:32:17.494 V/WindowManagerShell( 1240): 
+Transition requested (#50): android.os.BinderProxy@d592016 
+TransitionRequestInfo { type = CLOSE, triggerTask = null, pipTask = null, 
+remoteTransition = null, displayChange = null, flags = 16, debugId = 50 }
+  full_logcat.txt:83824:04-20 03:32:17.501 D/EGL_emulation( 1546): 
+app_time_stats: avg=73.01ms min=6.01ms max=663.66ms count=20
+  full_logcat.txt:84369:04-20 03:32:25.438 E/TransactionExecutor( 8217): 
+tId:-16361131     
+LaunchActivityItem{activityToken=android.os.BinderProxy@b356434,intent=Intent 
+{ act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] 
+flg=0x10200000 cmp=com.liverpool.turnos78/.MainActivity 
+bnds=[156,962][292,1129] },ident=240534863,info=ActivityInfo{6cb3f1e 
+com.liverpool.turnos78.MainActivity},curConfig={1.0 310mcc260mnc [en_US] ldltr 
+sw360dp w360dp h640dp 320dpi nrml long port finger qwerty/v/v dpad/v 
+winConfig={ mBounds=Rect(0, 0 - 720, 1280) mAppBounds=Rect(0, 0 - 720, 1280) 
+mMaxBounds=Rect(0, 0 - 720, 1280) mDisplayRotation=ROTATION_0 
+mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined 
+mRotation=ROTATION_0} as.2 s.23 fontWeightAdjustment=0},overrideConfig={1.0 
+310mcc260mnc [en_US] ldltr sw360dp w360dp h640dp 320dpi nrml long port finger 
+qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 720, 1280) 
+mAppBounds=Rect(0, 0 - 720, 1280) mMaxBounds=Rect(0, 0 - 720, 1280) 
+mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard 
+mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.3 fontWeightAdjustment=0},d
+eviceId=0,referrer=null,procState=2,state=null,persistentState=null,pendingResu
+lts=null,pendingNewIntents=null,sceneTransitionInfo=null,profilerInfo=null,assi
+stToken=android.os.BinderProxy@6be30a3,shareableActivityToken=android.os.Binder
+Proxy@2de8fa0,activityWindowInfo=ActivityWindowInfo{isEmbedded=false, 
+taskBounds=Rect(0, 0 - 720, 1280), taskFragmentBounds=Rect(0, 0 - 720, 1280)}}
+  full_logcat.txt:84370:04-20 03:32:25.438 E/TransactionExecutor( 8217): 
+tId:-16361131     ResumeActivityItem{mActivityToken=android.os.BinderProxy@b356
+434,procState=-1,updateProcState=false,isForward=true,shouldSendCompatFakeFocus
+=false}
+  full_logcat.txt:84371:04-20 03:32:25.438 E/TransactionExecutor( 8217): 
+tId:-16361131     Target activity: Not found for token: 
+android.os.BinderProxy@b356434
+  full_logcat.txt:84372:04-20 03:32:25.438 E/TransactionExecutor( 8217): 
+tId:-16361131   ]
+  full_logcat.txt:84373:04-20 03:32:25.438 E/TransactionExecutor( 8217): 
+tId:-16361131 }
+> full_logcat.txt:84374:04-20 03:32:25.438 D/AndroidRuntime( 8217): Shutting 
+down VM
+> full_logcat.txt:84375:04-20 03:32:25.441 E/AndroidRuntime( 8217): FATAL 
+EXCEPTION: main
+> full_logcat.txt:84376:04-20 03:32:25.441 E/AndroidRuntime( 8217): Process: 
+com.liverpool.turnos78, PID: 8217
+> full_logcat.txt:84377:04-20 03:32:25.441 E/AndroidRuntime( 8217): 
+java.lang.RuntimeException: Unable to instantiate activity 
+ComponentInfo{com.liverpool.turnos78/com.liverpool.turnos78.MainActivity}: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:84378:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3954)
+> full_logcat.txt:84379:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4235)
+> full_logcat.txt:84380:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at android
+.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:112)
+> full_logcat.txt:84381:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at android
+.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionE
+xecutor.java:174)
+> full_logcat.txt:84382:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at android
+.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionE
+xecutor.java:109)
+> full_logcat.txt:84383:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at android
+.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81)
+> full_logcat.txt:84384:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+> full_logcat.txt:84385:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.os.Handler.dispatchMessage(Handler.java:107)
+> full_logcat.txt:84386:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.os.Looper.loopOnce(Looper.java:232)
+> full_logcat.txt:84387:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.os.Looper.loop(Looper.java:317)
+> full_logcat.txt:84388:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.app.ActivityThread.main(ActivityThread.java:8705)
+> full_logcat.txt:84389:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+java.lang.reflect.Method.invoke(Native Method)
+> full_logcat.txt:84390:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at com.and
+roid.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+> full_logcat.txt:84391:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+> full_logcat.txt:84392:04-20 03:32:25.441 E/AndroidRuntime( 8217): Caused by: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:84393:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+> full_logcat.txt:84394:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+> full_logcat.txt:84395:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+> full_logcat.txt:84396:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at android
+.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+> full_logcat.txt:84397:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at android
+x.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:4
+4)
+> full_logcat.txt:84398:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.app.Instrumentation.newActivity(Instrumentation.java:1448)
+> full_logcat.txt:84399:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3941)
+> full_logcat.txt:84400:04-20 03:32:25.441 E/AndroidRuntime( 8217): 	... 13 
+more
+  full_logcat.txt:84401:04-20 03:32:25.445 W/ActivityTaskManager(  619):   
+Force finishing activity com.liverpool.turnos78/.MainActivity
+  full_logcat.txt:84402:04-20 03:32:25.450 V/WindowManagerShell( 1240): 
+Transition requested (#53): android.os.BinderProxy@91b3614 
+TransitionRequestInfo { type = CLOSE, triggerTask = null, pipTask = null, 
+remoteTransition = null, displayChange = null, flags = 16, debugId = 53 }
+  full_logcat.txt:84403:04-20 03:32:25.461 I/Process ( 8217): Sending signal. 
+PID: 8217 SIG: 9
+  full_logcat.txt:84404:04-20 03:32:25.462 D/VRI[NexusLauncherActivity]( 
+1546): visibilityChanged oldVisibility=false newVisibility=true
+  full_logcat.txt:84405:04-20 03:32:25.471 I/BpBinder(  396): onLastStrongRef 
+automatically unlinking death recipients: 
+  full_logcat.txt:105752:04-20 03:40:10.386 E/TransactionExecutor( 9343): 
+tId:-1672079403     
+LaunchActivityItem{activityToken=android.os.BinderProxy@b356434,intent=Intent 
+{ act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] 
+flg=0x10300000 cmp=com.liverpool.turnos78/.MainActivity 
+},ident=246721679,info=ActivityInfo{6cb3f1e 
+com.liverpool.turnos78.MainActivity},curConfig={1.0 310mcc260mnc [en_US] ldltr 
+sw360dp w360dp h640dp 320dpi nrml long port finger qwerty/v/v dpad/v 
+winConfig={ mBounds=Rect(0, 0 - 720, 1280) mAppBounds=Rect(0, 0 - 720, 1280) 
+mMaxBounds=Rect(0, 0 - 720, 1280) mDisplayRotation=ROTATION_0 
+mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined 
+mRotation=ROTATION_0} as.2 s.23 fontWeightAdjustment=0},overrideConfig={1.0 
+310mcc260mnc [en_US] ldltr sw360dp w360dp h640dp 320dpi nrml long port finger 
+qwerty/v/v dpad/v winConfig={ mBounds=Rect(0, 0 - 720, 1280) 
+mAppBounds=Rect(0, 0 - 720, 1280) mMaxBounds=Rect(0, 0 - 720, 1280) 
+mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard 
+mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.3 fontWeightAdjustment=0},d
+eviceId=0,referrer=null,procState=2,state=null,persistentState=null,pendingResu
+lts=null,pendingNewIntents=null,sceneTransitionInfo=null,profilerInfo=null,assi
+stToken=android.os.BinderProxy@6be30a3,shareableActivityToken=android.os.Binder
+Proxy@2de8fa0,activityWindowInfo=ActivityWindowInfo{isEmbedded=false, 
+taskBounds=Rect(0, 0 - 720, 1280), taskFragmentBounds=Rect(0, 0 - 720, 1280)}}
+  full_logcat.txt:105753:04-20 03:40:10.386 E/TransactionExecutor( 9343): 
+tId:-1672079403     ResumeActivityItem{mActivityToken=android.os.BinderProxy@b3
+56434,procState=-1,updateProcState=false,isForward=true,shouldSendCompatFakeFoc
+us=false}
+  full_logcat.txt:105754:04-20 03:40:10.386 E/TransactionExecutor( 9343): 
+tId:-1672079403     Target activity: Not found for token: 
+android.os.BinderProxy@b356434
+  full_logcat.txt:105755:04-20 03:40:10.386 E/TransactionExecutor( 9343): 
+tId:-1672079403   ]
+  full_logcat.txt:105756:04-20 03:40:10.386 E/TransactionExecutor( 9343): 
+tId:-1672079403 }
+> full_logcat.txt:105757:04-20 03:40:10.386 D/AndroidRuntime( 9343): Shutting 
+down VM
+> full_logcat.txt:105758:04-20 03:40:10.394 E/AndroidRuntime( 9343): FATAL 
+EXCEPTION: main
+> full_logcat.txt:105759:04-20 03:40:10.394 E/AndroidRuntime( 9343): Process: 
+com.liverpool.turnos78, PID: 9343
+> full_logcat.txt:105760:04-20 03:40:10.394 E/AndroidRuntime( 9343): 
+java.lang.RuntimeException: Unable to instantiate activity 
+ComponentInfo{com.liverpool.turnos78/com.liverpool.turnos78.MainActivity}: 
+java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:105761:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3954)
+> full_logcat.txt:105762:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4235)
+> full_logcat.txt:105763:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at androi
+d.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:112)
+> full_logcat.txt:105764:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at androi
+d.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(Transaction
+Executor.java:174)
+> full_logcat.txt:105765:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at androi
+d.app.servertransaction.TransactionExecutor.executeTransactionItems(Transaction
+Executor.java:109)
+> full_logcat.txt:105766:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at androi
+d.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:81
+)
+> full_logcat.txt:105767:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.app.ActivityThread$H.handleMessage(ActivityThread.java:2636)
+> full_logcat.txt:105768:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.os.Handler.dispatchMessage(Handler.java:107)
+> full_logcat.txt:105769:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.os.Looper.loopOnce(Looper.java:232)
+> full_logcat.txt:105770:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.os.Looper.loop(Looper.java:317)
+> full_logcat.txt:105771:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.app.ActivityThread.main(ActivityThread.java:8705)
+> full_logcat.txt:105772:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+java.lang.reflect.Method.invoke(Native Method)
+> full_logcat.txt:105773:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at com.an
+droid.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:580)
+> full_logcat.txt:105774:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+com.android.internal.os.ZygoteInit.main(ZygoteInit.java:886)
+> full_logcat.txt:105775:04-20 03:40:10.394 E/AndroidRuntime( 9343): Caused 
+by: java.lang.ClassNotFoundException: Didn't find class 
+"com.liverpool.turnos78.MainActivity" on path: DexPathList[[zip file "/data/app
+/~~5d3-hKY_1VeTg2PGTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/bas
+e.apk"],nativeLibraryDirectories=[/data/app/~~5d3-hKY_1VeTg2PGTRJf5w==/com.live
+rpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/lib/x86_64, /data/app/~~5d3-hKY_1VeTg2P
+GTRJf5w==/com.liverpool.turnos78-JhYTDc5Sxq4os7ZDM_5j7g==/base.apk!/lib/x86_64,
+ /system/lib64, /system_ext/lib64]]
+> full_logcat.txt:105776:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+> full_logcat.txt:105777:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+> full_logcat.txt:105778:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+> full_logcat.txt:105779:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at androi
+d.app.AppComponentFactory.instantiateActivity(AppComponentFactory.java:95)
+> full_logcat.txt:105780:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at androi
+dx.core.app.CoreComponentFactory.instantiateActivity(CoreComponentFactory.java:
+44)
+> full_logcat.txt:105781:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.app.Instrumentation.newActivity(Instrumentation.java:1448)
+> full_logcat.txt:105782:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	at 
+android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3941)
+> full_logcat.txt:105783:04-20 03:40:10.394 E/AndroidRuntime( 9343): 	... 13 
+more
+  full_logcat.txt:105784:04-20 03:40:10.399 W/ActivityManager(  619): Unable 
+to start service Intent { 
+act=com.google.android.gms.play.cloud.search.grpc.io.action.BIND 
+cmp=com.google.android.gms/.play.cloud.search.PlayCloudSearchEndpointService } 
+U=0: not found
+  full_logcat.txt:105785:04-20 03:40:10.406 W/ActivityTaskManager(  619):   
+Force finishing activity com.liverpool.turnos78/.MainActivity
+  full_logcat.txt:105786:04-20 03:40:10.414 I/DropBoxManagerService(  619): 
+add tag=data_app_crash isTagEnabled=true flags=0x2
+  full_logcat.txt:105787:04-20 03:40:10.433 V/WindowManagerShell( 1240): 
+onTransitionReady (#55) android.os.BinderProxy@a3b448d: {id=55 t=OPEN f=0x0 
+trk=0 r=[0@Point(0, 0)] 
+c=[{WCT{android.window.IWindowContainerToken$Stub$Proxy@f23b616} m=TO_FRONT 
+f=MOVE_TO_TOP leash=Surface(name=Task=13)/@0xaf39ebb sb=Rect(0, 0 - 720, 1280) 
+eb=Rect(0, 0 - 720, 1280) d=0 
+taskParent=-1},{WCT{android.window.IWindowContainerToken$Stub$Proxy@eb36b97} 
+m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x3b9bfd8 sb=Rect(0, 0 
+- 720, 1280) eb=Rect(0, 0 - 720, 1280) d=0 taskParent=-1}]}
+  full_logcat.txt:105788:04-20 03:40:10.440 W/ActivityManager(  619): Unbind 
+failed: could not find connection for android.os.BinderProxy@a296c4d
+
+

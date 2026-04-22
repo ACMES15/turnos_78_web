@@ -18,12 +18,12 @@ class MediaManager {
       final ref = FirebaseStorage.instance.ref().child('media/${file.name}');
       if (file.bytes != null) {
         // Para web y fallback universal
-        final uploadTask = await ref.putData(file.bytes!);
+        await ref.putData(file.bytes!);
         final url = await ref.getDownloadURL();
         urls.add(url);
       } else if (file.path != null) {
         // Para Windows/Linux/Mac
-        final uploadTask = await ref.putFile(File(file.path!));
+        await ref.putFile(File(file.path!));
         final url = await ref.getDownloadURL();
         urls.add(url);
       }

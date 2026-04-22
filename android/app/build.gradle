@@ -3,11 +3,13 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
 }
 
 android {
     namespace = "com.liverpool.turnos78"
-    compileSdk = flutter.compileSdkVersion
+    // Forzar compileSdk a 35 para compatibilidad con plugins modernos
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -42,5 +44,3 @@ android {
 flutter {
     source = "../.."
 }
-
-apply plugin: 'com.google.gms.google-services'

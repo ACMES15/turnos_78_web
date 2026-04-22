@@ -21,6 +21,31 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
   void initState() {
     super.initState();
     _listenTurnoLlamado();
+    // Escuchar cambios en las URLs de media para web/APP and actualizar rotador
+    FirebaseFirestore.instance
+        .collection('media')
+        .doc('rotador')
+        .snapshots()
+        .listen((doc) {
+      if (doc.exists && doc['urls'] != null) {
+        final urls = List<String>.from(doc['urls']);
+        if (mounted) {
+          setState(() {
+            _mediaUrls = urls;
+          });
+          _prepareVideoController();
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _mediaUrls = [];
+          });
+          _videoController?.dispose();
+          _videoController = null;
+        }
+      }
+    });
+
     _startMediaRotation();
   }
 
@@ -189,36 +214,12 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
             .doc('rotador')
             .snapshots(),
         builder: (context, snapshot) {
-          List<String> mediaUrls = [];
-          if (snapshot.hasData &&
-              snapshot.data != null &&
-              snapshot.data!['urls'] != null) {
-            mediaUrls = List<String>.from(snapshot.data!['urls']);
-          }
+          final mediaUrls = _mediaUrls;
           // Mantener el índice dentro del rango
-          if (_mediaIndex >= mediaUrls.length) {
+          if (mediaUrls.isEmpty) {
             _mediaIndex = 0;
-          }
-          // Actualizar el controlador de video si cambia la URL
-          if (mediaUrls.isNotEmpty) {
-            final url = mediaUrls[_mediaIndex];
-            if ((url.endsWith('.mp4') || url.endsWith('.mov'))) {
-              if (_videoController == null ||
-                  _videoController!.dataSource != url) {
-                _videoController?.dispose();
-                _videoController = VideoPlayerController.network(url)
-                  ..initialize().then((_) {
-                    setState(() {});
-                    _videoController?.play();
-                  });
-              }
-            } else {
-              _videoController?.dispose();
-              _videoController = null;
-            }
-          } else {
-            _videoController?.dispose();
-            _videoController = null;
+          } else if (_mediaIndex >= mediaUrls.length) {
+            _mediaIndex = 0;
           }
           return Row(
             children: [

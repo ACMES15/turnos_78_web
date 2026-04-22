@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "272159311295",
+    "project_id": "turnos78web",
+    "storage_bucket": "turnos78web.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272159311295:android:8526f2dc4d919951ec0d0a",
+        "android_client_info": {
+          "package_name": "com.liverpool.turnos78"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz2MPjpL0Clq9vgwnKay0yXgcAcFOtFG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272159311295:android:7c86baee46a9c059ec0d0a",
+        "android_client_info": {
+          "package_name": "com.liverpool.turnos78web"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz2MPjpL0Clq9vgwnKay0yXgcAcFOtFG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

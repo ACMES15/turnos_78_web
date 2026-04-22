@@ -137,6 +137,10 @@ class AdminTurnosPage extends StatelessWidget {
                       }
                       final docs = snapshot.data!.docs.where((doc) {
                         final data = doc.data() as Map<String, dynamic>;
+                        // Excluir turnos finalizados por reset automático
+                        if (data['finalizado_por_reset'] == true) {
+                          return false;
+                        }
                         return !data.containsKey('finalizado') ||
                             data['finalizado'] != true;
                       }).toList();

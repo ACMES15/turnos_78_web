@@ -15,6 +15,7 @@ Future<void> resetTurnosPendientes() async {
         ...data,
         'hora_finalizacion': now.toIso8601String(),
         'reset_automatico': true,
+        'finalizado_por_reset': true, // Nuevo campo para distinguir
       });
       await doc.reference.delete();
     }

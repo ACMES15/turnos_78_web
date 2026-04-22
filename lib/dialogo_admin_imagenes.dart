@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class DialogoAdminImagenes extends StatefulWidget {
   const DialogoAdminImagenes({Key? key}) : super(key: key);
@@ -9,6 +12,40 @@ class DialogoAdminImagenes extends StatefulWidget {
 }
 
 class _DialogoAdminImagenesState extends State<DialogoAdminImagenes> {
+  Future<void> _seleccionarYSubirImagen() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final result = await FilePicker.platform.pickFiles(type: FileType.image);
+      if (result != null && result.files.single.bytes != null) {
+        final file = result.files.single;
+        final fileName = DateTime.now().millisecondsSinceEpoch.toString() +
+            '_' +
+            (file.name);
+        final ref = FirebaseStorage.instance.ref().child('rotador/$fileName');
+        await ref.putData(file.bytes!);
+        final url = await ref.getDownloadURL();
+        // Guardar URL en Firestore
+        final docRef =
+            FirebaseFirestore.instance.collection('media').doc('rotador');
+        await docRef.set({
+          'urls': FieldValue.arrayUnion([url])
+        }, SetOptions(merge: true));
+        await _cargarUrls();
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Error al subir imagen: $e';
+      });
+    } finally {
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
   final TextEditingController _urlController = TextEditingController();
   bool _loading = false;
   List<String> _urls = [];
@@ -138,6 +175,15 @@ class _DialogoAdminImagenesState extends State<DialogoAdminImagenes> {
                   child: const Text('Agregar'),
                 ),
               ],
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.pink,
+              ),
+              onPressed: _loading ? null : _seleccionarYSubirImagen,
+              icon: const Icon(Icons.upload_file),
+              label: const Text('Subir imagen desde dispositivo'),
             ),
             const SizedBox(height: 16),
             if (_urls.isEmpty && !_loading) const Text('No hay imágenes'),
