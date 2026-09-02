@@ -11,6 +11,7 @@ import 'toma_turnos_page.dart'
 import 'admin_turnos_page.dart';
 import 'vista_turnos_page.dart';
 import 'historial_turnos_page.dart';
+import 'turnos_reset_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,8 @@ void main() async {
       defaultTargetPlatform == TargetPlatform.macOS) {
     try {
       await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform);
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
     } catch (e, st) {
       // No detener la app por fallo en la inicialización de Firebase en release.
       // Registramos el error para diagnosticarlo desde el dispositivo.
@@ -42,10 +44,12 @@ void main() async {
       // Intentar un escaneo inicial y volcar resultados al log (útil para debug).
       try {
         final devices = await BluetoothHelper.scanForPrinters(
-            timeout: const Duration(seconds: 4));
+          timeout: const Duration(seconds: 4),
+        );
         // ignore: avoid_print
         print(
-            'Dispositivos BLE encontrados: ${devices.map((d) => '${d.device.name}(${d.device.id})').toList()}');
+          'Dispositivos BLE encontrados: ${devices.map((d) => '${d.device.name}(${d.device.id})').toList()}',
+        );
       } catch (e) {
         // ignore: avoid_print
         print('Error en escaneo inicial BLE: $e');
@@ -56,6 +60,9 @@ void main() async {
       print('Error pidiendo permisos: $e');
     }
   }
+
+  // Arrancar watcher para limpiar turnos a las 00:00.
+  startDailyTurnosResetWatcher();
 
   runApp(const MyApp());
 }

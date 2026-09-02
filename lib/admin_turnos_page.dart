@@ -218,10 +218,20 @@ class AdminTurnosPage extends StatelessWidget {
                               final numero = (turno['numero'] ?? '')
                                   .toString()
                                   .trim();
+                              final tipo = (turno['tipo'] ?? '')
+                                  .toString()
+                                  .trim();
+                              final fechaTurno = (turno['fecha'] ?? '')
+                                  .toString()
+                                  .trim();
                               final yaLlamado = llamados.any(
                                 (ll) =>
                                     (ll['numero']?.toString().trim() ?? '') ==
-                                    numero,
+                                        numero &&
+                                    (ll['tipo']?.toString().trim() ?? '') ==
+                                        tipo &&
+                                    (ll['fecha']?.toString().trim() ?? '') ==
+                                        fechaTurno,
                               );
                               return Container(
                                 color: yaLlamado

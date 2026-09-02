@@ -1,20 +1,21 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// Ejecuta la limpieza y reseteo de turnos pendientes a historial a la 1:00 am.
+/// Ejecuta la limpieza y reseteo de turnos pendientes a las 00:00.
 Future<void> resetTurnosPendientes() async {
   final now = DateTime.now();
-  final hoy = DateTime(now.year, now.month, now.day, 1, 0, 0);
-  final configDoc = await FirebaseFirestore.instance
+  final midnightToday = DateTime(now.year, now.month, now.day, 0, 0, 0);
+  final configDocRef = FirebaseFirestore.instance
       .collection('config')
-      .doc('reset')
-      .get();
+      .doc('reset');
+  final configDoc = await configDocRef.get();
 
   final lastReset = configDoc.data()?['last_reset'] != null
       ? DateTime.tryParse(configDoc.data()!['last_reset'])
       : null;
 
-  if (lastReset == null || lastReset.isBefore(hoy)) {
-    // Limpiar turnos llamados activos para que no se vean como atendidos en la vista
+  if (lastReset == null || !isSameDay(lastReset, midnightToday)) {
+    // Evitar que resten turnos previos en la vista del administrador.
     final llamados = await FirebaseFirestore.instance
         .collection('turnos_llamados')
         .get();
@@ -22,7 +23,7 @@ Future<void> resetTurnosPendientes() async {
       await doc.reference.delete();
     }
 
-    // Si hay turnos del día anterior, moverlos a historial de forma segura.
+    // Mover turnos del día anterior a historial antes de limpiar.
     final turnos = await FirebaseFirestore.instance.collection('turnos').get();
     for (final doc in turnos.docs) {
       final data = doc.data();
@@ -35,10 +36,24 @@ Future<void> resetTurnosPendientes() async {
       await doc.reference.delete();
     }
 
-    await FirebaseFirestore.instance.collection('config').doc('reset').set({
-      'last_reset': hoy.toIso8601String(),
+    await configDocRef.set({
+      'last_reset': midnightToday.toIso8601String(),
+      'updated_at': now.toIso8601String(),
     });
   }
+}
+
+bool isSameDay(DateTime a, DateTime b) {
+  return a.year == b.year && a.month == b.month && a.day == b.day;
+}
+
+void startDailyTurnosResetWatcher() {
+  Timer.periodic(const Duration(minutes: 1), (_) async {
+    final now = DateTime.now();
+    if (now.hour == 0 && now.minute == 0) {
+      await resetTurnosPendientes();
+    }
+  });
 }
 
 /// Obtiene el número siguiente de turno, reiniciando si es un nuevo día después del reset.
@@ -52,16 +67,15 @@ Future<int> getNextTurnoNumber(String tipo) async {
     lastReset = DateTime.tryParse(config['last_reset']);
   }
   final now = DateTime.now();
-  final hoy = DateTime(now.year, now.month, now.day, 1, 0, 0);
-  // Si es un nuevo día después del reset, reiniciar a 1
-  if (lastReset == null || (now.isAfter(hoy) && lastReset.isBefore(hoy))) {
+  final hoy = DateTime(now.year, now.month, now.day, 0, 0, 0);
+  if (lastReset == null || !isSameDay(lastReset, hoy)) {
     return 1;
   }
-  // Buscar el mayor número del día en las 3 colecciones usando ambos campos para filtrar
+
   int maxNum = 0;
   final startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
   final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
-  // turnos
+
   final turnos = await FirebaseFirestore.instance
       .collection('turnos')
       .where('tipo', isEqualTo: tipo)
@@ -86,7 +100,7 @@ Future<int> getNextTurnoNumber(String tipo) async {
       if (n > maxNum) maxNum = n;
     }
   }
-  // turnos_llamados
+
   final llamados = await FirebaseFirestore.instance
       .collection('turnos_llamados')
       .where('tipo', isEqualTo: tipo)
@@ -111,7 +125,7 @@ Future<int> getNextTurnoNumber(String tipo) async {
       if (n > maxNum) maxNum = n;
     }
   }
-  // turnos_finalizados
+
   final finalizados = await FirebaseFirestore.instance
       .collection('turnos_finalizados')
       .where('tipo', isEqualTo: tipo)
