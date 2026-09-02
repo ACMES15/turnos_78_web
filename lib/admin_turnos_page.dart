@@ -6,10 +6,54 @@ import 'dialogo_admin_imagenes.dart';
 class AdminTurnosPage extends StatelessWidget {
   const AdminTurnosPage({Key? key}) : super(key: key);
 
+  static Future<void> _registrarLlamado(
+    BuildContext context,
+    Map<String, dynamic> turno,
+  ) async {
+    final now = DateTime.now();
+    final expiresAt = now.add(const Duration(minutes: 3));
+
+    await FirebaseFirestore.instance.collection('turnos_llamados').add({
+      'numero': (turno['numero'] ?? '').toString().trim(),
+      'tipo': turno['tipo'] ?? '',
+      'fecha': turno['fecha'] ?? '',
+      'hora': turno['hora'] ?? '',
+      'timestamp': FieldValue.serverTimestamp(),
+      'createdAtLocal': now,
+      'llamadoAt': now,
+      'expiresAt': expiresAt,
+      'finalizado': false,
+    });
+
+    Future.delayed(const Duration(minutes: 3), () async {
+      final llamado = await FirebaseFirestore.instance
+          .collection('turnos_llamados')
+          .where('numero', isEqualTo: (turno['numero'] ?? '').toString().trim())
+          .get();
+
+      for (final doc in llamado.docs) {
+        await doc.reference.delete();
+      }
+    });
+
+    try {
+      await AudioPlayer().play(AssetSource('sounds/dingdong.mp3'));
+    } catch (e) {
+      print('Error reproduciendo sonido: $e');
+    }
+
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Turno ${turno['numero']} llamado'),
+        backgroundColor: Colors.pink,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final AudioPlayer audioPlayer = AudioPlayer();
-    bool sonidoHabilitado = false;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -33,11 +77,11 @@ class AdminTurnosPage extends StatelessWidget {
         actions: [
           TextButton.icon(
             icon: const Icon(Icons.image, color: Colors.white),
-            label:
-                const Text('Imágenes', style: TextStyle(color: Colors.white)),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white,
+            label: const Text(
+              'Imágenes',
+              style: TextStyle(color: Colors.white),
             ),
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
             onPressed: () async {
               showDialog(
                 context: context,
@@ -75,41 +119,53 @@ class AdminTurnosPage extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: Center(
-                          child: Text('Turno',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16)),
+                          child: Text(
+                            'Turno',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
                         flex: 2,
                         child: Center(
-                          child: Text('Tipo de turno',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16)),
+                          child: Text(
+                            'Tipo de turno',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
                         flex: 3,
                         child: Center(
-                          child: Text('Fecha y hora',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16)),
+                          child: Text(
+                            'Fecha y hora',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
                         flex: 3,
                         child: Center(
-                          child: Text('Acciones',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16)),
+                          child: Text(
+                            'Acciones',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -125,19 +181,22 @@ class AdminTurnosPage extends StatelessWidget {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
-                            child:
-                                CircularProgressIndicator(color: Colors.pink));
+                          child: CircularProgressIndicator(color: Colors.pink),
+                        );
                       }
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return const Center(
-                            child: Text('No hay turnos solicitados',
-                                style: TextStyle(
-                                    color: Colors.pink,
-                                    fontWeight: FontWeight.bold)));
+                          child: Text(
+                            'No hay turnos solicitados',
+                            style: TextStyle(
+                              color: Colors.pink,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
                       }
                       final docs = snapshot.data!.docs.where((doc) {
                         final data = doc.data() as Map<String, dynamic>;
-                        // Excluir turnos finalizados por reset automático
                         if (data['finalizado_por_reset'] == true) {
                           return false;
                         }
@@ -156,15 +215,20 @@ class AdminTurnosPage extends StatelessWidget {
                                 const Divider(height: 1, color: Colors.pink),
                             itemBuilder: (context, i) {
                               final turno = docs[i];
-                              final yaLlamado = llamados.any((ll) =>
-                                  (ll['numero']?.toString().trim() ?? '') ==
-                                  (turno['numero']?.toString().trim() ?? ''));
+                              final numero = (turno['numero'] ?? '')
+                                  .toString()
+                                  .trim();
+                              final yaLlamado = llamados.any(
+                                (ll) =>
+                                    (ll['numero']?.toString().trim() ?? '') ==
+                                    numero,
+                              );
                               return Container(
                                 color: yaLlamado
                                     ? Colors.green.shade100
                                     : i % 2 == 0
-                                        ? Colors.pink.shade50
-                                        : Colors.white,
+                                    ? Colors.pink.shade50
+                                    : Colors.white,
                                 child: Row(
                                   children: [
                                     Expanded(
@@ -174,16 +238,19 @@ class AdminTurnosPage extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            Text(turno['numero'] ?? '',
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
+                                            Text(
+                                              turno['numero'] ?? '',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                             if (yaLlamado)
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                    left: 8.0),
+                                                  left: 8.0,
+                                                ),
                                                 child: Text(
-                                                  'Atendiendo',
+                                                  'Llamado',
                                                   style: TextStyle(
                                                     color:
                                                         Colors.green.shade700,
@@ -206,197 +273,52 @@ class AdminTurnosPage extends StatelessWidget {
                                       flex: 3,
                                       child: Center(
                                         child: Text(
-                                            '${turno['fecha'] ?? ''} ${turno['hora'] ?? ''}'),
+                                          '${turno['fecha'] ?? ''} ${turno['hora'] ?? ''}',
+                                        ),
                                       ),
                                     ),
                                     Expanded(
                                       flex: 3,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(Icons.campaign,
-                                                color: Colors.pink),
-                                            tooltip: 'Llamar',
+                                      child: Center(
+                                        child: SizedBox(
+                                          width: 180,
+                                          height: 52,
+                                          child: ElevatedButton.icon(
+                                            icon: const Icon(
+                                              Icons.campaign,
+                                              size: 24,
+                                            ),
+                                            label: const Text(
+                                              'Llamar',
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.pink,
+                                              foregroundColor: Colors.white,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 12,
+                                                  ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                            ),
                                             onPressed: yaLlamado
                                                 ? null
                                                 : () async {
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection(
-                                                            'turnos_llamados')
-                                                        .add({
-                                                      'numero':
-                                                          (turno['numero'] ??
-                                                              ''),
-                                                      'tipo':
-                                                          turno['tipo'] ?? '',
-                                                      'fecha':
-                                                          turno['fecha'] ?? '',
-                                                      'hora':
-                                                          turno['hora'] ?? '',
-                                                      'timestamp': FieldValue
-                                                          .serverTimestamp(),
-                                                      'createdAtLocal':
-                                                          DateTime.now(),
-                                                      'finalizado': false,
-                                                    });
-                                                    // Sugerencia: Para web, intenta reproducir el sonido usando un método estático
-                                                    // para evitar problemas de contexto. Si sigue sin sonar, prueba con
-                                                    // otro archivo de audio compatible.
-                                                    try {
-                                                      await AudioPlayer().play(
-                                                          AssetSource(
-                                                              'sounds/dingdong.mp3'));
-                                                    } catch (e) {
-                                                      print(
-                                                          'Error reproduciendo sonido: $e');
-                                                    }
-                                                    // ignore: use_build_context_synchronously
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                          content: Text(
-                                                              'Turno ${turno['numero']} llamado'),
-                                                          backgroundColor:
-                                                              Colors.pink),
+                                                    await _registrarLlamado(
+                                                      context,
+                                                      turno.data()
+                                                          as Map<
+                                                            String,
+                                                            dynamic
+                                                          >,
                                                     );
                                                   },
                                           ),
-                                          IconButton(
-                                            icon: const Icon(
-                                                Icons.hourglass_empty,
-                                                color: Colors.orange),
-                                            tooltip: 'Pendiente',
-                                            onPressed: () async {
-                                              // Eliminar de turnos_llamados si existe
-                                              final llamado =
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection(
-                                                          'turnos_llamados')
-                                                      .where('numero',
-                                                          isEqualTo:
-                                                              turno['numero'])
-                                                      .limit(1)
-                                                      .get();
-                                              if (llamado.docs.isNotEmpty) {
-                                                await llamado
-                                                    .docs.first.reference
-                                                    .delete();
-                                              }
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.check_circle,
-                                                color: Colors.green),
-                                            tooltip: 'Finalizar',
-                                            onPressed: yaLlamado
-                                                ? () async {
-                                                    final now = DateTime.now();
-                                                    // Marcar como finalizado en 'turnos'
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('turnos')
-                                                        .doc(turno.id)
-                                                        .update({
-                                                      'finalizado': true,
-                                                      'hora_finalizacion':
-                                                          now.toIso8601String(),
-                                                    });
-                                                    // Marcar como finalizado en 'turnos_llamados' si existe
-                                                    final llamado =
-                                                        await FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                'turnos_llamados')
-                                                            .where('numero',
-                                                                isEqualTo: turno[
-                                                                    'numero'])
-                                                            .limit(1)
-                                                            .get();
-                                                    if (llamado
-                                                        .docs.isNotEmpty) {
-                                                      await llamado
-                                                          .docs.first.reference
-                                                          .update({
-                                                        'finalizado': true,
-                                                        'hora_finalizacion': now
-                                                            .toIso8601String()
-                                                      });
-                                                    }
-                                                    // Guardar en historial_cyc_turnos
-                                                    final horaSolicitud =
-                                                        turno['hora'] ?? '';
-                                                    final fechaSolicitud =
-                                                        turno['fecha'] ?? '';
-                                                    DateTime fechaHoraSolicitud;
-                                                    if (turno['timestamp']
-                                                        is Timestamp) {
-                                                      fechaHoraSolicitud =
-                                                          (turno['timestamp']
-                                                                  as Timestamp)
-                                                              .toDate();
-                                                    } else {
-                                                      fechaHoraSolicitud =
-                                                          DateTime.tryParse(
-                                                                  turno['timestamp']
-                                                                          ?.toString() ??
-                                                                      '') ??
-                                                              now;
-                                                    }
-                                                    final duracion =
-                                                        now.difference(
-                                                            fechaHoraSolicitud);
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection(
-                                                            'historial_cyc_turnos')
-                                                        .add({
-                                                      'numero':
-                                                          (turno['numero'] ??
-                                                                  '')
-                                                              .toString()
-                                                              .trim(),
-                                                      'tipo':
-                                                          turno['tipo'] ?? '',
-                                                      'fecha': fechaSolicitud,
-                                                      'hora_solicitud':
-                                                          horaSolicitud,
-                                                      'hora_finalizacion': now,
-                                                      'tiempo_transcurrido':
-                                                          duracion.inMinutes,
-                                                      'timestamp_solicitud':
-                                                          fechaHoraSolicitud,
-                                                      'timestamp_finalizacion':
-                                                          now,
-                                                    });
-                                                    // ignore: use_build_context_synchronously
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                          content: Text(
-                                                              'Turno ${turno['numero']} finalizado'),
-                                                          backgroundColor:
-                                                              Colors.green),
-                                                    );
-                                                  }
-                                                : () {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      const SnackBar(
-                                                          content: Text(
-                                                              'Primero debes llamar el turno antes de finalizar.'),
-                                                          backgroundColor:
-                                                              Colors.orange),
-                                                    );
-                                                  },
-                                          ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -412,7 +334,6 @@ class AdminTurnosPage extends StatelessWidget {
               ],
             ),
           ),
-          // Botón flotante para habilitar sonido en web
           Positioned(
             bottom: 24,
             right: 24,
@@ -421,8 +342,9 @@ class AdminTurnosPage extends StatelessWidget {
                 return FloatingActionButton.extended(
                   onPressed: () async {
                     try {
-                      await audioPlayer
-                          .play(AssetSource('sounds/dingdong.mp3'));
+                      await audioPlayer.play(
+                        AssetSource('sounds/dingdong.mp3'),
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('¡Sonido habilitado!'),

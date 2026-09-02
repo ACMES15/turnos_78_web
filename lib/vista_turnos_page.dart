@@ -27,39 +27,26 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
         .doc('rotador')
         .snapshots()
         .listen((doc) {
-      if (doc.exists && doc['urls'] != null) {
-        final urls = List<String>.from(doc['urls']);
-        if (mounted) {
-          setState(() {
-            _mediaUrls = urls;
-          });
-          _prepareVideoController();
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            _mediaUrls = [];
-          });
-          _videoController?.dispose();
-          _videoController = null;
-        }
-      }
-    });
+          if (doc.exists && doc['urls'] != null) {
+            final urls = List<String>.from(doc['urls']);
+            if (mounted) {
+              setState(() {
+                _mediaUrls = urls;
+              });
+              _prepareVideoController();
+            }
+          } else {
+            if (mounted) {
+              setState(() {
+                _mediaUrls = [];
+              });
+              _videoController?.dispose();
+              _videoController = null;
+            }
+          }
+        });
 
     _startMediaRotation();
-  }
-
-  void _loadMedia() async {
-    final doc = await FirebaseFirestore.instance
-        .collection('media')
-        .doc('rotador')
-        .get();
-    if (doc.exists && doc['urls'] != null) {
-      setState(() {
-        _mediaUrls = List<String>.from(doc['urls']);
-      });
-      _prepareVideoController();
-    }
   }
 
   void _prepareVideoController() {
@@ -96,49 +83,64 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
         .where('finalizado', isEqualTo: false)
         .snapshots()
         .listen((snapshot) async {
-      // DEBUG: imprimir documentos recibidos en consola
-      print('turnos_llamados recibidos:');
-      for (final doc in snapshot.docs) {
-        print(doc.data());
-      }
-      // Usar createdAtLocal si timestamp es null y ordenar manualmente
-      final nuevos = snapshot.docs
-          .map((doc) => {
-                'id': doc.id,
-                'numero': doc['numero']?.toString() ?? '',
-                'tipo': doc['tipo']?.toString() ?? '',
-                'fecha': doc['fecha']?.toString() ?? '',
-                'hora': doc['hora']?.toString() ?? '',
-                'timestamp': doc['timestamp'] ?? doc['createdAtLocal'],
-              })
-          .toList();
-      nuevos.sort((a, b) {
-        final ta = a['timestamp'];
-        final tb = b['timestamp'];
-        if (ta == null && tb == null) return 0;
-        if (ta == null) return 1;
-        if (tb == null) return -1;
-        return (tb as Comparable).compareTo(ta);
-      });
-      final ultimos = nuevos.take(10).toList();
-      if (mounted) {
-        // Detectar si hay un nuevo turno para sonar
-        if (ultimos.isNotEmpty &&
-            (_turnosLlamados.isEmpty ||
-                ultimos.first['numero'] != _turnosLlamados.first['numero'])) {
-          try {
-            await _audioPlayer.play(AssetSource('sounds/dingdong.mp3'));
-          } catch (e) {
-            print('Error reproduciendo sonido: $e');
+          // DEBUG: imprimir documentos recibidos en consola
+          print('turnos_llamados recibidos:');
+          for (final doc in snapshot.docs) {
+            print(doc.data());
           }
-        }
-        setState(() {
-          _turnosLlamados
-            ..clear()
-            ..addAll(ultimos);
+
+          final now = DateTime.now();
+          final activos = snapshot.docs.where((doc) {
+            final expiresAt = doc['expiresAt'];
+            if (expiresAt is Timestamp) {
+              return now.isBefore(expiresAt.toDate()) ||
+                  now.isAtSameMomentAs(expiresAt.toDate());
+            }
+            if (expiresAt is DateTime) {
+              return now.isBefore(expiresAt) || now.isAtSameMomentAs(expiresAt);
+            }
+            return true;
+          }).toList();
+
+          final nuevos = activos
+              .map(
+                (doc) => {
+                  'id': doc.id,
+                  'numero': doc['numero']?.toString() ?? '',
+                  'tipo': doc['tipo']?.toString() ?? '',
+                  'fecha': doc['fecha']?.toString() ?? '',
+                  'hora': doc['hora']?.toString() ?? '',
+                  'timestamp': doc['timestamp'] ?? doc['createdAtLocal'],
+                },
+              )
+              .toList();
+          nuevos.sort((a, b) {
+            final ta = a['timestamp'];
+            final tb = b['timestamp'];
+            if (ta == null && tb == null) return 0;
+            if (ta == null) return 1;
+            if (tb == null) return -1;
+            return (tb as Comparable).compareTo(ta);
+          });
+          final ultimos = nuevos.take(10).toList();
+          if (mounted) {
+            if (ultimos.isNotEmpty &&
+                (_turnosLlamados.isEmpty ||
+                    ultimos.first['numero'] !=
+                        _turnosLlamados.first['numero'])) {
+              try {
+                await _audioPlayer.play(AssetSource('sounds/dingdong.mp3'));
+              } catch (e) {
+                print('Error reproduciendo sonido: $e');
+              }
+            }
+            setState(() {
+              _turnosLlamados
+                ..clear()
+                ..addAll(ultimos);
+            });
+          }
         });
-      }
-    });
   }
 
   @override
@@ -179,11 +181,8 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
           builder: (context, constraints) {
             double fontSize = constraints.maxWidth > 600 ? 36 : 24;
             return Text(
-              'LIVERPOOL GALERIAS GDL CLICK AND COLLECT',
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-              ),
+              'LIVERPOOL GALERIAS',
+              style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -243,26 +242,32 @@ class _VistaTurnosPageState extends State<VistaTurnosPage> {
                       Expanded(
                         child: _turnosLlamados.isEmpty
                             ? const Center(
-                                child: Text('Esperando turnos...',
-                                    style: TextStyle(
-                                        fontSize: 32,
-                                        color: Colors.pink,
-                                        fontWeight: FontWeight.bold)))
+                                child: Text(
+                                  'Esperando turnos...',
+                                  style: TextStyle(
+                                    fontSize: 32,
+                                    color: Colors.pink,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
                             : ListView.builder(
                                 itemCount: _turnosLlamados.length,
                                 itemBuilder: (context, i) {
                                   final turno = _turnosLlamados[i];
-                                  final numero =
-                                      (turno['numero'] ?? '').toString();
+                                  final numero = (turno['numero'] ?? '')
+                                      .toString();
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 32, horizontal: 8),
+                                      vertical: 32,
+                                      horizontal: 8,
+                                    ),
                                     child: Card(
                                       color: Colors.white,
                                       elevation: 4,
                                       shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32)),
+                                        borderRadius: BorderRadius.circular(32),
+                                      ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(32),
                                         child: Center(

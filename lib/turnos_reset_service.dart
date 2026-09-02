@@ -4,10 +4,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 Future<void> resetTurnosPendientes() async {
   final now = DateTime.now();
   final hoy = DateTime(now.year, now.month, now.day, 1, 0, 0);
-  final ayer = hoy.subtract(const Duration(days: 1));
+  final configDoc = await FirebaseFirestore.instance
+      .collection('config')
+      .doc('reset')
+      .get();
 
-  // Solo ejecutar si la hora actual es entre 1:00 y 1:10 am (ventana de 10 minutos)
-  if (now.isAfter(hoy) && now.isBefore(hoy.add(const Duration(minutes: 10)))) {
+  final lastReset = configDoc.data()?['last_reset'] != null
+      ? DateTime.tryParse(configDoc.data()!['last_reset'])
+      : null;
+
+  if (lastReset == null || lastReset.isBefore(hoy)) {
+    // Limpiar turnos llamados activos para que no se vean como atendidos en la vista
+    final llamados = await FirebaseFirestore.instance
+        .collection('turnos_llamados')
+        .get();
+    for (final doc in llamados.docs) {
+      await doc.reference.delete();
+    }
+
+    // Si hay turnos del día anterior, moverlos a historial de forma segura.
     final turnos = await FirebaseFirestore.instance.collection('turnos').get();
     for (final doc in turnos.docs) {
       final data = doc.data();
@@ -15,11 +30,11 @@ Future<void> resetTurnosPendientes() async {
         ...data,
         'hora_finalizacion': now.toIso8601String(),
         'reset_automatico': true,
-        'finalizado_por_reset': true, // Nuevo campo para distinguir
+        'finalizado_por_reset': true,
       });
       await doc.reference.delete();
     }
-    // Guardar el último reset para reiniciar el conteo
+
     await FirebaseFirestore.instance.collection('config').doc('reset').set({
       'last_reset': hoy.toIso8601String(),
     });
@@ -28,8 +43,10 @@ Future<void> resetTurnosPendientes() async {
 
 /// Obtiene el número siguiente de turno, reiniciando si es un nuevo día después del reset.
 Future<int> getNextTurnoNumber(String tipo) async {
-  final config =
-      await FirebaseFirestore.instance.collection('config').doc('reset').get();
+  final config = await FirebaseFirestore.instance
+      .collection('config')
+      .doc('reset')
+      .get();
   DateTime? lastReset;
   if (config.exists && config['last_reset'] != null) {
     lastReset = DateTime.tryParse(config['last_reset']);

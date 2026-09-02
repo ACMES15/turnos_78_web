@@ -53,7 +53,7 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
       Permission.bluetooth,
       Permission.bluetoothScan,
       Permission.bluetoothConnect,
-      Permission.location
+      Permission.location,
     ].request();
     // Escanear y conectar
     fb.FlutterBluePlus.startScan(timeout: const Duration(seconds: 4));
@@ -64,8 +64,8 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
           fb.FlutterBluePlus.stopScan();
           try {
             await r.device.connect();
-            List<fb.BluetoothService> services =
-                await r.device.discoverServices();
+            List<fb.BluetoothService> services = await r.device
+                .discoverServices();
             for (var service in services) {
               for (var c in service.characteristics) {
                 if (c.properties.write) {
@@ -76,7 +76,8 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                        content: Text('Conectado a Zebra: ${r.device.name}')),
+                      content: Text('Conectado a Zebra: ${r.device.name}'),
+                    ),
                   );
                   return;
                 }
@@ -107,7 +108,7 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
         Permission.bluetoothScan,
         Permission.bluetoothConnect,
         Permission.bluetoothAdvertise,
-        Permission.location
+        Permission.location,
       ].request();
       return statuses.values.every((status) => status.isGranted);
     }
@@ -131,8 +132,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
       if (bonded.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('No hay impresoras emparejadas.'),
-              backgroundColor: Colors.orange),
+            content: Text('No hay impresoras emparejadas.'),
+            backgroundColor: Colors.orange,
+          ),
         );
         return;
       }
@@ -158,8 +160,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
           ),
           actions: [
             TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancelar')),
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancelar'),
+            ),
           ],
         ),
       );
@@ -175,8 +178,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Error al listar impresoras: $e'),
-            backgroundColor: Colors.red),
+          content: Text('Error al listar impresoras: $e'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -196,12 +200,6 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     }
   }
 
-  Future<String> _getNextTurnoTransaccion(String tipo) async {
-    final pref = tipo == 'RECOGER' ? 'R' : 'I';
-    final nextNum = await getNextTurnoNumber(tipo);
-    return '$pref${nextNum.toString().padLeft(3, '0')}';
-  }
-
   Future<void> _solicitarTurno(String tipo) async {
     setState(() {
       _loading = true;
@@ -219,7 +217,11 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
           .where('fecha', isEqualTo: fecha)
           .get();
       final count = query.docs.length;
-      final pref = tipo == 'RECOGER' ? 'R' : 'I';
+      final pref = tipo == 'TURNO'
+          ? 'T'
+          : tipo == 'RECOGER'
+              ? 'R'
+              : 'I';
       final numero = '$pref${(count + 1).toString().padLeft(3, '0')}';
 
       // Mostrar mensaje si es el primer turno del día
@@ -227,7 +229,8 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-                '¡Nuevo día! El consecutivo de turnos ha sido reiniciado.'),
+              '¡Nuevo día! El consecutivo de turnos ha sido reiniciado.',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -267,12 +270,15 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     if (selectedPrinter != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(
-                'Usando impresora emparejada ${selectedPrinter!.name}...')),
+          content: Text(
+            'Usando impresora emparejada ${selectedPrinter!.name}...',
+          ),
+        ),
       );
       try {
         final String address = selectedPrinter!.address ?? '';
-        final String zpl = '''
+        final String zpl =
+            '''
 ^XA
 ^CI28
 ^FO200,30^A0N,40,40^FB400,1,0,C,0^FDLIVERPOOL^FS
@@ -286,21 +292,26 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
         if (sent) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text('Impresión enviada a ${selectedPrinter!.name}')),
+              content: Text('Impresión enviada a ${selectedPrinter!.name}'),
+            ),
           );
           return;
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text(
-                    'Error enviando ZPL a ${selectedPrinter!.name}. Probando fallback BLE...')),
+              content: Text(
+                'Error enviando ZPL a ${selectedPrinter!.name}. Probando fallback BLE...',
+              ),
+            ),
           );
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(
-                  'Error imprimiendo via RFCOMM: $e. Probando fallback BLE...')),
+            content: Text(
+              'Error imprimiendo via RFCOMM: $e. Probando fallback BLE...',
+            ),
+          ),
         );
       }
     }
@@ -310,8 +321,10 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     if (zebraDevice == null || zebraCharacteristic == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text(
-                'No hay impresora conectada por BLE. Intentando conectar...')),
+          content: Text(
+            'No hay impresora conectada por BLE. Intentando conectar...',
+          ),
+        ),
       );
       try {
         await _autoConnectZebra();
@@ -321,8 +334,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     if (zebraDevice == null || zebraCharacteristic == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('No se encontró impresora. Imprimir cancelado.'),
-            backgroundColor: Colors.red),
+          content: Text('No se encontró impresora. Imprimir cancelado.'),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
@@ -355,18 +369,21 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
       if (zebraCharacteristic == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text(
-                  'No se encontró característica de escritura en la impresora.'),
-              backgroundColor: Colors.red),
+            content: Text(
+              'No se encontró característica de escritura en la impresora.',
+            ),
+            backgroundColor: Colors.red,
+          ),
         );
         return;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Imprimiendo...')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Imprimiendo...')));
 
-      String zpl = '''
+      String zpl =
+          '''
 ^XA
 ^CI28
 ^FO200,30^A0N,40,40^FB400,1,0,C,0^FDLIVERPOOL^FS
@@ -383,8 +400,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Error imprimiendo: $e'),
-            backgroundColor: Colors.red),
+          content: Text('Error imprimiendo: $e'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -478,11 +496,8 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
           builder: (context, constraints) {
             double fontSize = constraints.maxWidth > 600 ? 36 : 24;
             return Text(
-              'LIVERPOOL GALERIAS CYC',
-              style: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-              ),
+              'LIVERPOOL GALERIAS GUADALAJARA',
+              style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -516,8 +531,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                           ),
                           autofocus: true,
                           onSubmitted: (_) {
-                            Navigator.of(ctx)
-                                .pop(_controller.text == 'turno78');
+                            Navigator.of(
+                              ctx,
+                            ).pop(_controller.text == 'turno78');
                           },
                         ),
                       ],
@@ -543,7 +559,10 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
               );
               if (result == true) {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/', (route) => false);
+                  context,
+                  '/',
+                  (route) => false,
+                );
               } else if (result == false) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -561,7 +580,6 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
           final isTablet = constraints.maxWidth > 600;
           final double padding = isTablet ? 64 : 24;
           final double buttonSize = isTablet ? 220 : 130;
-          final double buttonSpacing = isTablet ? 60 : 24;
           final double fontSize = isTablet ? 22 : 16;
           final double lastTurnFontSize = isTablet ? 36 : 28;
           return Center(
@@ -588,9 +606,10 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                         Text(
                           '¡Gracias por tu preferencia, toma un turno y en breve te atenderemos!',
                           style: TextStyle(
-                              fontSize: fontSize,
-                              color: Colors.pink,
-                              fontWeight: FontWeight.bold),
+                            fontSize: fontSize,
+                            color: Colors.pink,
+                            fontWeight: FontWeight.bold,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: isTablet ? 48 : 28),
@@ -598,24 +617,13 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             _BotonTurno(
-                              label: 'INFORMES',
+                              label: 'TURNO',
                               color: const Color.fromARGB(255, 239, 81, 134),
-                              icon: Icons.info_outline,
+                              icon: Icons.confirmation_number_outlined,
                               onTap: _loading
                                   ? null
-                                  : () => _solicitarTurno('INFORMES'),
+                                  : () => _solicitarTurno('TURNO'),
                               size: buttonSize,
-                            ),
-                            SizedBox(width: buttonSpacing),
-                            _BotonTurno(
-                              label: 'RECOGER PEDIDO',
-                              color: Colors.pink.shade700,
-                              icon: Icons.shopping_bag_outlined,
-                              onTap: _loading
-                                  ? null
-                                  : () => _solicitarTurno('RECOGER'),
-                              size: buttonSize,
-                              labelColor: Colors.white,
                             ),
                           ],
                         ),
@@ -626,7 +634,9 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                             // Mostrar nombre de impresora predeterminada (no clickable)
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade100,
                                 borderRadius: BorderRadius.circular(8),
@@ -635,7 +645,8 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                                 selectedPrinter?.name ??
                                     'No hay impresora predeterminada',
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.w600),
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                             SizedBox(width: isTablet ? 24 : 12),
@@ -651,8 +662,10 @@ class _TomaTurnosPageState extends State<TomaTurnosPage> {
                         ],
                         if (_error != null) ...[
                           SizedBox(height: isTablet ? 24 : 12),
-                          Text(_error!,
-                              style: const TextStyle(color: Colors.red)),
+                          Text(
+                            _error!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
                         ],
                         if (_ultimoTurno != null && !_loading) ...[
                           SizedBox(height: isTablet ? 48 : 24),
@@ -696,14 +709,12 @@ class _BotonTurno extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
   final double size;
-  final Color? labelColor;
   const _BotonTurno({
     required this.label,
     required this.color,
     required this.icon,
     this.onTap,
     this.size = 120,
-    this.labelColor,
   });
 
   @override
@@ -732,7 +743,7 @@ class _BotonTurno extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: labelColor ?? Colors.white,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: size * 0.13,
                 shadows: [
