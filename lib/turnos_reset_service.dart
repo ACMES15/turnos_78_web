@@ -27,8 +27,27 @@ Future<void> resetTurnosPendientes() async {
     final turnos = await FirebaseFirestore.instance.collection('turnos').get();
     for (final doc in turnos.docs) {
       final data = doc.data();
-      await FirebaseFirestore.instance.collection('turnos_finalizados').add({
+      final solicitudTs = data['timestamp'] is Timestamp
+          ? (data['timestamp'] as Timestamp).toDate()
+          : (data['createdAtLocal'] is Timestamp
+                ? (data['createdAtLocal'] as Timestamp).toDate()
+                : data['createdAtLocal'] is DateTime
+                ? data['createdAtLocal'] as DateTime
+                : DateTime.now());
+
+      final historialData = {
         ...data,
+        'timestamp_solicitud': solicitudTs,
+        'hora_finalizacion': now,
+        'finalizado': true,
+        'finalizado_por_reset': true,
+      };
+
+      await FirebaseFirestore.instance
+          .collection('historial_cyc_turnos')
+          .add(historialData);
+      await FirebaseFirestore.instance.collection('turnos_finalizados').add({
+        ...historialData,
         'hora_finalizacion': now.toIso8601String(),
         'reset_automatico': true,
         'finalizado_por_reset': true,

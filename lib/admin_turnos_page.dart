@@ -12,11 +12,14 @@ class AdminTurnosPage extends StatelessWidget {
   ) async {
     final now = DateTime.now();
     final expiresAt = now.add(const Duration(minutes: 3));
+    final numero = (turno['numero'] ?? '').toString().trim();
+    final tipo = (turno['tipo'] ?? '').toString().trim();
+    final fecha = (turno['fecha'] ?? '').toString().trim();
 
     await FirebaseFirestore.instance.collection('turnos_llamados').add({
-      'numero': (turno['numero'] ?? '').toString().trim(),
-      'tipo': turno['tipo'] ?? '',
-      'fecha': turno['fecha'] ?? '',
+      'numero': numero,
+      'tipo': tipo,
+      'fecha': fecha,
       'hora': turno['hora'] ?? '',
       'timestamp': FieldValue.serverTimestamp(),
       'createdAtLocal': now,
@@ -28,10 +31,49 @@ class AdminTurnosPage extends StatelessWidget {
     Future.delayed(const Duration(minutes: 3), () async {
       final llamado = await FirebaseFirestore.instance
           .collection('turnos_llamados')
-          .where('numero', isEqualTo: (turno['numero'] ?? '').toString().trim())
+          .where('numero', isEqualTo: numero)
+          .where('tipo', isEqualTo: tipo)
+          .where('fecha', isEqualTo: fecha)
           .get();
 
       for (final doc in llamado.docs) {
+        await doc.reference.delete();
+      }
+
+      final turnoSolicitado = await FirebaseFirestore.instance
+          .collection('turnos')
+          .where('numero', isEqualTo: numero)
+          .where('tipo', isEqualTo: tipo)
+          .where('fecha', isEqualTo: fecha)
+          .get();
+
+      for (final doc in turnoSolicitado.docs) {
+        final data = doc.data();
+        final solicitudTs = data['timestamp'] is Timestamp
+            ? (data['timestamp'] as Timestamp).toDate()
+            : (data['createdAtLocal'] is Timestamp
+                  ? (data['createdAtLocal'] as Timestamp).toDate()
+                  : data['createdAtLocal'] is DateTime
+                  ? data['createdAtLocal'] as DateTime
+                  : DateTime.now());
+
+        final finalizacion = DateTime.now();
+        final paqueteHistorial = {
+          ...data,
+          'timestamp_solicitud': solicitudTs,
+          'hora_finalizacion': finalizacion,
+          'finalizado': true,
+          'finalizado_por_llamado': true,
+          'llamadoAt': now,
+          'finalizadoAt': finalizacion,
+        };
+
+        await FirebaseFirestore.instance
+            .collection('historial_cyc_turnos')
+            .add(paqueteHistorial);
+        await FirebaseFirestore.instance
+            .collection('turnos_finalizados')
+            .add(paqueteHistorial);
         await doc.reference.delete();
       }
     });
